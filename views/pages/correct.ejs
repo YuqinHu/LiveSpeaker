@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+    body{
+        margin: 0;
+	    background: linear-gradient(45deg, #49a09d, #5f2c82);
+	    font-family: sans-serif;
+	    font-weight: 100;
+    }
+    
+    h1{
+        display:absolute;
+        font-family: Georgia, 'Times New Roman', Times, serif;
+        margin: 10px 10px 10px 24px;
+    }
+    
+    #button{
+        top:50%;
+        background-color:#0a0a23;
+        color: #fff;
+        border:none;
+        border-radius:10px;
+        font-family: Georgia, 'Times New Roman', Times, serif;
+        width: 110px;
+        height: 30px;
+    }
+    
+    #button:hover{
+        top:50%;
+        background-color:#d4d4da;
+        color: rgb(12, 1, 1);
+        border:none;
+        border-radius:10px;
+        width: 110px;
+        height: 30px;
+    }
+    .buttons{
+        display:flex;
+    }
+</style>
+</head>
+<body>
+<h1>Your account has been created successfully!</h1>
+<div class = "buttons">
+    <div >
+        <form action="/create_account" method = "get">
+            <input id = "button" type="submit" value = "Re-create">
+        </form>
+    </div>
+    
+    <div >
+        <form action="/login" method = "get">
+            <input id = "button" type="submit" value = "Back to Login">
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
