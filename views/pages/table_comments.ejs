@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+ <head>
+    <meta charset = "UTF-8">
+    <title>User Comments</title>
+    <link rel="stylesheet"  href="./stylesheets/table.css">
+ </head>
+
+ <body class = "main_body">
+  <header>
+    <form action="/logout" method="get">
+        <input type="submit" value="Logout" id="logout_button">
+    </form>
+    <form action="/video" method="get">
+      <input type="submit" value="User page" id="video_button">
+  </form>
+  </header>
+    <div class="container">
+        <h1>User Comments</h1>
+    <table>
+        <thead>
+          <tr>
+            <th>Comment ID</th>
+            <th>User Uid</th>
+            <th>Name</th>
+            <th>Time</th>
+            <th>Comment</th>
+          </tr>
+        <thead>
+          <% rows.forEach(function(r) {  %>
+          <tr>
+            <td class="col col-1" data-label="Comment ID"><%= r.comment_id %></td>
+            <td class="col col-2" data-label="UID"><%= r.uid %></td>
+            <td class="col col-3" data-label="Name"><%= r.name %></td>
+            <td class="col col-4" data-label="Time"><%= r.date %>/<%= r.month %>/<%= r.year %> <br><%= r.hours %>:<%= r.minutes %>:<%= r.seconds %> </td>
+            <td class="col col-5" data-label="Comment"><%= r.comment %></td>
+            <td>
+              <form action="/delete_comment/<%= r.comment_id %>" method = "post">
+              <input id = "delete_button" type="submit" value = "Delete">
+              </form> 
+          </td>
+          </tr>
+          <% }); %>
+        </table>
+    
+    <div class = "buttons">
+      <div>
+        <form action="/table" method = "get">
+          <input id = "button" type="submit" value = "Back to table">
+      </form>
+      </div>
+    </div>
+    
+
+ </body>
+</html>
