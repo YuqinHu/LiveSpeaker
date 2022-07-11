@@ -1,95 +1,101 @@
 <!doctype html>
 <html>
+
 <head>
-<meta charset="utf-8">
-<title>Video Page</title>
-<link href="./stylesheets/video.css" rel="stylesheet" type="text/css">
+  <meta charset="utf-8">
+  <title>Video Page</title>
+  <link href="./stylesheets/video.css" rel="stylesheet" type="text/css">
+  <link href="./stylesheets/button.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
-    <header>
-        <form action="/logout" method="get">
-            <input type="submit" value="Logout" id="logout_button">
-        </form>
 
-</header>
+  <main>
 
-<main>
+    <div id="video_box" name="video_box" class="video_box">
+      <video controls>
+        <source src="https://www.mszoo.net/276api/static/video/sample_video.mp4" type="video/mp4">
+      </video>
+    </div>
 
-<div id="video_box" name="video_box" class="video_box">
-  <video controls >
-    <source src="https://www.mszoo.net/276api/static/video/sample_video.mp4" type="video/mp4">
-  </video>
-</div>
+    <div id="input_area">
+      <!--input-->
+      <form action="/addComment" method="post">
 
-<div id = "input_area">
-<!--input-->
-<form action="/addComment" method="post">
- 
- <table border="0" id="input_table" class="big_table">
-  <tbody>
-       <tr>
-		   <h3>New Note</h3>
-    </tr>
-    <tr>
-      	<td>
-<!--
+        <table border="0" id="input_table" class="big_table">
+          <tbody>
+            <tr>
+              <h3>New Note</h3>
+            </tr>
+            <tr>
+              <td>
+                <!--
         	<input name = "new_comment_user_name" type="text">
     		<input name = "new_comment_uid" type="number">
 -->
-   		</td>
-    </tr>
-    <tr>
-      <td>
-<table border="0" class="big_table">
-  <tbody>
-    <tr>
-      <td><textarea name = "new_comment_comment"></textarea></td>
-    </tr>
-    <tr>
-      <td><input name = "submit_new_comment" type="submit" class="button" ></td>
-    </tr>
-  </tbody>
-</table>
-      </td>
-    </tr>
-  </tbody>
-</table>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <table border="0" class="big_table">
+                  <tbody>
+                    <tr>
+                      <td><textarea name="new_comment_comment"></textarea></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <button name="submit_new_comment" type="submit" class="button" class="noselect"><span>submit
+                          </span></button>
+
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </form>
+    </div>
+
+    <div class="all_comment_area">
+      <!--show comment-->
+
+      <h3>All Notes</h3>
+      <!--  -->
+      <table border="0" id="new_comment_table">
+        <tbody>
+          <% rows.forEach(function(r) { %>
+            <tr>
+              <td>
+                <div id="single_comment">
+                  <table border="0">
+                    <tbody>
+                      <tr>
+                        <td>&nbsp;&nbsp;<b>
+                            <%= r.name %> &nbsp; <%= r.date %>/<%= r.month %>/<%= r.year %> &nbsp;<%= r.hours %>:<%=
+                                        r.minutes %>:<%= r.seconds %>
+                          </b> </td>
+                      </tr>
+                      <tr>
+                        <td><br>&nbsp;&nbsp;<%= r.comment %><br><br></td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                </div>
+
+              </td>
+            </tr>
+        </tbody>
+        <% }); %>
+      </table>
+      <br><br>
+
+  </main>
+  <form action="/logout" method="get">
+    <button class="noselect"><span>Logout</span></button>
   </form>
-</div>
-	
-<div class="all_comment_area">
-<!--show comment-->
-
-<h3>All Notes</h3>
-<!--  -->
-<table border="0" id="new_comment_table">
-    <tbody>
-        <% rows.forEach(function(r) { %>
-      <tr>
-        <td>
-            <div id="single_comment">
-            <table border="0">
-                <tbody>
-                  <tr>
-                    <td>&nbsp;&nbsp;<b><%= r.name %> &nbsp; <%= r.date %>/<%= r.month %>/<%= r.year %> &nbsp;<%= r.hours %>:<%= r.minutes %>:<%= r.seconds %> </b> </td>
-                  </tr>
-                  <tr>
-                    <td><br>&nbsp;&nbsp;<%= r.comment %><br><br></td>
-                  </tr>
-                </tbody>
-              </table>
-
-              </div>
-
-        </td>
-      </tr>
-    </tbody>
-    <% }); %>
-  </table>
-  <br><br>
-
-</main>
-
 </body>
+
 </html>

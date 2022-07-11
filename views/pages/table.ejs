@@ -1,65 +1,69 @@
 <!DOCTYPE html>
 <html>
- <head>
-    <meta charset = "UTF-8">
-    <title>usr Information table</title>
-    <link rel="stylesheet"  href="./stylesheets/table.css">
- </head>
 
- <body class = "main_body">
-  <header>
-    <form action="/logout" method="get">
-        <input type="submit" value="Logout" id="logout_button">
-    </form>
+<head>
+  <meta charset="UTF-8">
+  <title>usr Information table</title>
+  <link rel="stylesheet" href="./stylesheets/table.css">
+  <link href="./stylesheets/button.css" rel="stylesheet" type="text/css">
+</head>
 
-  <form action="/video" method="get">
-      <input type="submit" value="User page" id="video_button">
-  </form>
+<body class="main_body">
 
-  </header>
 
-    <div class="container">
-        <h1>User and Admin Login Information</h1>
+  <div class="container">
+    <h1>User and Admin Login Information</h1>
     <table>
+      <thead>
+        <tr>
+          <th>User Uid</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>User_Type</th>
+        </tr>
         <thead>
-          <tr>
-            <th>User Uid</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>User_Type</th>
-          </tr>
-        <thead>
-          <% rows.forEach(function(r) {  %>
-          <tr>
-            <td class="col col-1" data-label="UID"><%= r.uid %></td>
-            <td class="col col-2" data-label="Name"><%= r.name %></td>
-            <td class="col col-3" data-label="Email"><%= r.email %></td>
-            <td class="col col-4" data-label="User_Type"><%= r.type %></td>
-            <td>
-              <form action="/delete/<%= r.uid %>" method = "post">
-              <input id = "delete_button" type="submit" value = "Delete">
-              </form> 
-          </td>
-          </tr>
-          <% }); %>
-        </table>
-    
-    <div class = "buttons">
-      <div >
-        <form action="/add_admin" method = "get">
-            <input id = "button" type="submit" value = "Add New Admin">
+          <% rows.forEach(function(r) { %>
+            <tr>
+              <td class="col col-1" data-label="UID">
+                <%= r.uid %>
+              </td>
+              <td class="col col-2" data-label="Name">
+                <%= r.name %>
+              </td>
+              <td class="col col-3" data-label="Email">
+                <%= r.email %>
+              </td>
+              <td class="col col-4" data-label="User_Type">
+                <%= r.type %>
+              </td>
+              <td>
+                <form action="/delete/<%= r.uid %>" method="post">
+                  <input id="delete_button" type="submit" value="Delete">
+                </form>
+              </td>
+            </tr>
+            <% }); %>
+    </table>
+
+    <div class="buttons">
+      <div>
+        <form action="/add_admin" method="get">
+          <input id="button" type="submit" value="Add New Admin">
         </form>
       </div>
-      
-      <div >
-        <form action="/view_comments" method = "get">
-          <input id = "button" type="submit" value = "View Comments">
+
+      <div>
+        <form action="/view_comments" method="get">
+          <input id="button" type="submit" value="View Comments">
         </form>
       </div>
     </div>
-    
+    <form action="/logout" method="get">
+      <button class="noselect"><span>Logout</span></button>
+    </form>
 
 
 
- </body>
+</body>
+
 </html>

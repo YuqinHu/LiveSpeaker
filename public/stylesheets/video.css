@@ -29,40 +29,51 @@
     bottom: -80px;
 }
 
-
-body {
-margin: 0;
-background: linear-gradient(45deg, #49a09d, #5f2c82);
-font-family: sans-serif;
-font-weight: 100;
+div.a {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
 }
 
-main{
+body {
+    margin: 0;
+    background: linear-gradient(45deg, #49a09d, #5f2c82);
+    font-family: sans-serif;
+    font-weight: 100;
 
-width: 80%;
-background-color: white;
-margin-left: 10%;
-margin-top: 5%;
-margin-bottom: 5%;
-margin-right: 10%;
+}
+
+main {
+
+    width: 80%;
+    background-color: white;
+    margin-left: 10%;
+    margin-top: 5%;
+    margin-bottom: 5%;
+    margin-right: 10%;
 }
 
 
 textarea {
-width: 100%;
-height: 150px;
-/*  padding: 12px 20px;*/
-box-sizing: border-box;
-border: 2px solid #ccc;
-border-radius: 4px;
-background-color: #f8f8f8;
-font-size: 16px;
-resize: none;
+    width: 100%;
+    height: 150px;
+    /*  padding: 12px 20px;*/
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    background-color: #f8f8f8;
+    font-size: 16px;
+    resize: none;
 }
-input_area{
 
-margin: 10%;
+input_area {
+
+    margin: 10%;
 }
+
 /*
 form {
     height: 520px;
@@ -134,50 +145,49 @@ button {
 
 
 #input_area {
-margin: 3%;
+    margin: 3%;
 }
 
-.big_table{
-width: 100%;
+.big_table {
+    width: 100%;
 
 }
 
 form {
-width: 100%;
+    width: 100%;
 }
 
-video{
-width: 100%
+video {
+    width: 100%
 }
 
 .all_comment_area {
-margin: 3%;
+    margin: 3%;
 }
 
-header{
-    position:fixed;
-    top:0px;
+header {
+    position: fixed;
+    top: 0px;
     width: 100%;
     height: 5%;
     background-color: #ffffff;
 }
 
-#logout_button{
+#logout_button {
     width: auto;
     height: auto;
-    float:right;
+    float: right;
     margin-right: 1%;
 }
 
-#single_comment{
+#single_comment {
     padding: 5px;
-    background-color:  rgb(230, 230, 230);
+    background-color: rgb(230, 230, 230);
     margin-top: 1%;
     border-radius: 5px;
-    width : 100%;
+    width: 100%;
 }
 
-#new_comment_table{
-    width : 100%;
+#new_comment_table {
+    width: 100%;
 }
-
