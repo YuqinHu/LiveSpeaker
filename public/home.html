@@ -18,18 +18,19 @@
     <h1>Welcome to user page</h1>
     <br><br><br>
     <div>
-        <button onclick="document.getElementById('video').style.display='block'" class="noselect"><span>video
-                list</span></button>
+        <form action="/video" method="get">
+            <button class="noselect"><span>New session</span></button>
+        </form>
     </div>
     <br><br><br><br>
 
     <div>
-        <button onclick="document.getElementById('friend').style.display='block'"><span>friend list</span></button>
+        <button onclick="document.getElementById('join').style.display='block'"><span>Join session</span></button>
     </div>
     <br><br><br><br>
     <div>
         <form action="/video" method="get">
-            <button class="noselect"><span>video page</span></button>
+            <button class="noselect"><span>Older video</span></button>
         </form>
     </div>
     <br><br><br><br><br><br>
@@ -39,32 +40,22 @@
         </form>
     </div>
     <br><br>
-    <div id="video" class="w3-modal">
+
+    <div id="join" class="w3-modal">
         <div class="w3-modal-content w3-animate-zoom">
             <div class="w3-container w3-black w3-display-container">
-                <span onclick="document.getElementById('video').style.display='none'"
+                <span onclick="document.getElementById('join').style.display='none'"
                     class="w3-button w3-display-topright w3-large">x</span>
-                <h1>video list</h1>
+                <h1>Enter Session number and password please</h1>
             </div>
             <div class="w3-container">
-                <p>1.</p>
-                <p>2.</p>
-            </div>
+                <label for="email">Session number</label>
+                <input type="text" placeholder="session" id="session" name="session">
 
-        </div>
+                <label for="password">Password</label>
+                <input type="password" placeholder="Password" id="password" name="password">
 
-    </div>
-
-    <div id="friend" class="w3-modal">
-        <div class="w3-modal-content w3-animate-zoom">
-            <div class="w3-container w3-black w3-display-container">
-                <span onclick="document.getElementById('friend').style.display='none'"
-                    class="w3-button w3-display-topright w3-large">x</span>
-                <h1>friend list</h1>
-            </div>
-            <div class="w3-container">
-                <p>1.</p>
-                <p>2.</p>
+                <button class="noselect"><span>Join</span></button>
             </div>
 
         </div>
