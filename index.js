@@ -211,7 +211,7 @@ app.post('/delete_comment/:id', function (req, res) {
 
 });
 
-app.get('/video', (req, res) => {
+app.get('/notes', (req, res) => {
     //if user login and session exist load the page
     if (req.session.uid) {
         if (req.session.type == "admin" || req.session.type == "superadmin") {
@@ -224,7 +224,7 @@ app.get('/video', (req, res) => {
             if (error)
                 res.end(error);
             var result = { 'rows': result.rows }
-            res.render('pages/video', result);
+            res.render('pages/notes', result);
         })
     }
     //if user not login, rediect to the main page
@@ -232,6 +232,7 @@ app.get('/video', (req, res) => {
         res.redirect("/");
     }
 })
+
 
 app.get('/logout', (req, res) => {
     req.session.destroy();
@@ -278,7 +279,7 @@ app.post('/addComment', (req, res) => {
                 res.end(error);
             }
             else {
-                res.redirect("/video");
+                res.redirect("/notes");
             }
         })
     }
