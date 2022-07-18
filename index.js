@@ -9,18 +9,27 @@ const { Pool } = require('pg');
 const moment = require('moment');
 const { render } = require('ejs');
 
-
+/**
+ * Config OSS (AWS S3)
+ */
+ const BUCKET_REGION = process.env.BUCKET_REGION;
+ const OSS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
+ const OSS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
+ const S3_BUCKET=process.env.S3_BUCKET;
+ const OSS_ENDPOINT=process.env.OSS_ENDPOINT;
+ 
+ aws.config.update({
+     region: BUCKET_REGION,
+     accessKeyId: OSS_KEY_ID,
+     secretAccessKey: OSS_KEY
+ });
  
  /**
   * Config DATABASE
   */
   var pool;
   pool = new Pool({
-      connectionString: process.env.DATABASE_URL,
-      ssl: {
-        rejectUnauthorized: false
-      }
-      //'postgres://postgres:Wzh990823@localhost/users'
+      connectionString: 'postgres://postgres:Wzh990823@localhost/users'
     })
 
 const PORT = process.env.PORT || 5000
@@ -45,7 +54,120 @@ app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
 app.get('/', (req, res) => res.render('pages/login'))
 
+/**
+ * Function relate to OSS (AWS S3)
+ */
+//OSS GET
+app.get('/oss/sign-s3', (req, res) => {
+    if(req.session.uid){
+        const s3 = new aws.S3();
+        const fileName = req.query['file-name'];
+        const fileType = req.query['file-type'];
+        const s3Params = {
+        Bucket: S3_BUCKET,
+        Key: fileName,
+        Expires: 60,
+        ContentType: fileType,
+        ACL: 'public-read'
+        };
+    
+        s3.getSignedUrl('putObject', s3Params, (err, data) => {
+        if(err){
+            console.log(err);
+            return res.end();
+        }
+        const returnData = {
+            signedRequest: data,
+            url: `https://${S3_BUCKET}.${OSS_ENDPOINT}/${fileName}`
+        };
+        res.write(JSON.stringify(returnData));
+        res.end();
+        });
+    }
+});
 
+//OSS (AWS S3) STANDARD UPLOAD
+app.get('/oss/uploader/sign', async (req, res) => {
+    if(req.session.uid){
+        const s3 = new aws.S3();
+        const { key, type } = req.query;
+        const url = s3.getSignedUrl('putObject', {
+        Bucket: S3_BUCKET,
+        Key: key,
+        Expires: 3600,
+        ContentType: type,
+        });
+        res.send({ url });
+    }
+  });
+
+//OSS (AWS S3) SESSION VIDEO UPLOADER
+app.get('/oss/uploader/session_video/sign', async (req, res) => {
+    if(req.session.uid){
+        const random = [...Array(30)].map(() => Math.random().toString(36)[2]).join('');
+        const s3 = new aws.S3();
+        const { key, type, vid } = req.query;
+        const video_key = `session_video/session${vid}/uid${req.session.uid}/${random}/${key}`;
+
+        //add video URL and OSS PATH to database
+        var addvideo = 
+        `UPDATE sessions 
+        SET video_path = 'session_video/session${vid}/uid${req.session.uid}/${random}/${key}',
+        video_url = 'https://${S3_BUCKET}.${OSS_ENDPOINT}/session_video/session${vid}/uid${req.session.uid}/${random}/${key}' 
+        where session_id = ${vid}`;
+        pool.query(addvideo, (error,results)=>{
+            if (error){
+                res.end(error);
+            }
+        })
+
+        //get an upload url and send to client
+        const url = s3.getSignedUrl('putObject', {
+        Bucket: S3_BUCKET,
+        Key: video_key,
+        Expires: 3600,
+        ContentType: type,
+        });
+        res.send({ url });
+    }
+  });
+
+//get a login info (for get_session_info.js)
+app.get('/get_login_info',(req,res)=>{
+    res.send(req.session);
+});
+
+//set video as uploaded
+app.post('/UPLOADER/mark_upload',(req,res)=>{
+    if(req.session.uid){
+        var sessionID = req.body.session_id;
+        let marked = `UPDATE sessions SET video_state = 'VIDEO_EXIST' where session_id = ${sessionID}`;
+        pool.query(marked, (error, results) =>{
+            if(error){
+                res.end(error);
+            }       
+        })
+        res.end();
+    }res.end();
+})
+
+//GET video upload page
+app.get('/session_upload/:id',(req,res)=> {
+    if(req.session.uid){
+        var sessionID = parseInt(req.params.id);
+        pool.query('SELECT * From sessions where session_id = $1', [sessionID], (error, results) =>{
+            if(error){
+                res.end(error);
+            }
+            var result = {'rows':results.rows};
+            res.render('pages/upload/upload.ejs',result);           
+        })
+    }
+    else{
+        res.redirect("/");
+    }
+});
+////////////////////////////////////////////////
 
 
 app.get('/login', (req, res) => {
@@ -508,7 +630,116 @@ app.get('/home', (req,res)=>{
  * noneAdmin user must match req.session.session_id and request session id
  * 
  */
+app.get('/session_replay/:id', (req,res)=>{
+    if(req.session.uid){
+        var sessionID = parseInt(req.params.id);
+        // if(!(req.session.type == "admin" || req.session.type == "superadmin")){
+        //     if (!(req.session.session_id)){
+        //         res.redirect("/ERROR.html")
+        //     }else if(req.session.session_id != req.params.id){
+        //         res.redirect("/ERROR.html")
+        //     }
+        // }    
 
+        // console.log(sessionID)
+
+        // var session_que_join =`
+        //     SELECT  s_session_id, s_title,s_access_code, s_session_type, s_uid,c_comment_id, c_name, 
+        //      c_uid, c_comment, c_ts,s_start_time, s_video_url ,  s_video_state, diff, TO_CHAR(diff,'HH24:MI:SS') as diff_string
+        //     from
+        //     (select 
+        //     s.session_id as s_session_id, s.title as s_title,s.access_code as s_access_code, s.session_type as s_session_type, s.uid as s_uid, c.comment_id as c_comment_id, c.name as c_name, 
+        //     c.uid as c_uid, c.comment as c_comment, c.ts as c_ts,s.start_time as s_start_time, s.video_url as s_video_url , s.video_state as s_video_state,
+        //     c.ts - s.start_time as diff
+        //     from sessions s join session_comment c 
+        //     on s.session_id = '${sessionID}' AND s.session_id = c.session_id) as a`;
+
+         //var session_que_join_none_admin = `SELECT * from sessions where session_id = '${sessionID}'`;
+        // `
+        //     SELECT  s_session_id, s_title,s_access_code, s_session_type, s_uid,c_comment_id, c_name, 
+        //     c_uid, c_comment, c_ts,s_start_time, s_video_url ,  s_video_state, diff, TO_CHAR(diff,'HH24:MI:SS') as diff_string
+        //     from
+        //     (select 
+        //     s.session_id as s_session_id, s.title as s_title,s.access_code as s_access_code, s.session_type as s_session_type, s.uid as s_uid, c.comment_id as c_comment_id, c.name as c_name, 
+        //     c.uid as c_uid, c.comment as c_comment, c.ts as c_ts,s.start_time as s_start_time, s.video_url as s_video_url , s.video_state as s_video_state,
+        //     c.ts - s.start_time as diff
+        //     from sessions s join session_comment c 
+        //     on s.session_id = '${sessionID}' AND s.session_id = c.session_id) as a where c_uid = '${req.session.uid}'`;
+        //     //
+    
+        var session_que = `SELECT * From sessions where session_id = '${sessionID}'`
+
+        //var sql_que;
+        // if((req.session.type == "admin" || req.session.type == "superadmin")){
+        //     sql_que = session_que_join;
+        // }else{
+        //     sql_que = session_que_join_none_admin;
+        // }
+
+        pool.query(session_que, (error, results) =>{
+            if(error){
+                res.end(error);
+            }
+            //console.log(results)
+            // if(req.session.uid == results.rows[0]['uid']){
+                var result = {'rows':results.rows};
+
+                //console.log(results.rows[0]['video_state'])
+                if(results.rows[0]['session_type'] == 'wait' || results.rows[0]['session_type'] == 'live'){
+                    res.end();
+                }/// 
+                else{
+                    var session_notes;
+                    const session_video_url = results.rows[0]['video_url'];
+                    //const session_start_time = results.rows[0]['start_time'];
+                    if(results.rows[0]['video_state'] == 'VIDEO_EXIST'){
+                        //if (req.session.type == "admin" || req.session.type == "superadmin") {
+                            //var getCommentQuery = 'Select * from  session_comment';
+                        //}
+                        //else {
+                        var getCommentQuery = `Select * from  session_comment WHERE uid = '${req.session.uid}'`;
+                        //}
+                        // pool.query(session_que_join, (error, session_page_note) => {
+                            //console.log(results)
+                            session_notes = results;
+                            //console.log(session_notes)
+                            var page_data={session_video_url, session_notes}
+
+
+
+                            // if (error)
+                            //     res.end(error);
+                            // var session_page_note = { 'rows': results.rows }
+                            // if(session_page_note.rows.length > 0){
+                            //     for(let i = 0; i <results.rows.length; i++ ){
+                            //         var momentObj = moment(session_page_note.rows[i]['ts']);
+                            //         var momentString = momentObj.format('MMMM Do YYYY, h:mm:ss a');
+                            //         result.rows[i]['ts'] = momentString;
+                            //     }
+                               
+                            // }
+                            req.session.session_id = sessionID;
+                            res.render('pages/session_replay.ejs', page_data);
+                        // })
+                    }else{
+                        res.redirect("/ERROR.html")
+                        // res.end()
+                    }
+                }
+                //else{
+                ///check live
+
+            // }
+
+            // else{
+            //     res.end();
+            // }
+        })
+    }
+    else{
+        res.redirect("/");
+    }
+});
 
 app.post('/session_note', (req, res) => {
     if (req.session.uid) {
@@ -644,6 +875,44 @@ else {
     res.redirect("/");
 }
 })
+
+
+app.get('/review_notes', (req,res)=>{
+    if (req.session.uid ) {
+        if(req.session.session_id && req.session.session_type == "remote")
+        {
+            var user_review_not_query = `SELECT  s_session_id, s_title,s_access_code, s_session_type, s_uid,c_comment_id, c_name, 
+                c_uid, c_comment, c_ts,s_start_time, s_video_url ,  s_video_state, diff, TO_CHAR(diff,'HH24:MI:SS') as diff_string
+                from
+                (select 
+                s.session_id as s_session_id, s.title as s_title,s.access_code as s_access_code, s.session_type as s_session_type, s.uid as s_uid, c.comment_id as c_comment_id, c.name as c_name, 
+                c.uid as c_uid, c.comment as c_comment, c.ts as c_ts,s.start_time as s_start_time, s.video_url as s_video_url , s.video_state as s_video_state,
+                c.ts - s.start_time as diff
+                from sessions s join session_comment c 
+                on s.session_id = '${req.session.session_id}' AND s.session_id = c.session_id) as a where c_uid = '${req.session.uid}'`;
+
+            pool.query(user_review_not_query, (error2, results) => {
+                if(error2){
+                    res.end(error2);
+                }
+
+                var session_notes = { 'rows': results.rows};
+                const session_video_url = results.rows[0]['s_video_url'];
+                var page_data={session_video_url, session_notes}
+                res.render('pages/user_session_replay.ejs', page_data);
+            })
+        }
+        else{
+            delete req.session.session_id;
+            delete req.session.session_type;
+            res.redirect("/home");
+        }    
+    }
+    else{
+        res.redirect("/");
+    }
+});
+
 
 
 // app.post('/addReviewComment',(req,res)=>{

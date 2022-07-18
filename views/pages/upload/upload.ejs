@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>UPLOAD SESSION VIDEO</title>
+
+<!-- Don't move the position of the line below ! -->
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="../script/get_session_info.js"></script>
+</head>
+
+<body>
+<div>
+ <table width="100%" border="1">
+  <tbody>
+      <% rows.forEach(function(r) { %>
+        <tr>
+          	<td>TITLE</td>
+            <!-- do not change the ID ! -->
+          	<td><%= r.title %></td>
+        </tr>
+        <tr>
+          	<td>SESSION ID</td>
+          	<td id="vid"><%= r.session_id %></td>
+        </tr>
+        <tr>
+          	<td>ACCESS CODE</td>
+          	<td><%= r.access_code %></td>
+        </tr>
+        <tr>
+          	<td>START TIME</td>
+          	<td><%= r.start_time %></td>
+        </tr>
+        <tr>
+        	<td rowspan="2">UPLOAD VIDEO <br>(MP4 ONLY)<br><b>Please try to make the file smaller than 40MB!!! </b><br><b>Because we need to pay for the AWS S3!!</b></td>
+        	<td>
+				<input type="file" autofocus id='selected_file' accept="video/mp4"/>
+     		</td>
+      </tr>
+      <tr>
+			<td>
+                <!-- VERY IMPORTENT !!! -->
+                <!-- DO NOT CHANGE THE ID !!! -->
+				<button type="button" onclick="upload()">Upload</button>
+                <div id="uploading_sign" style="visibility: hidden;">
+                    <img src="../img/loading.gif" alt="Gif" width="5%">uploading... 
+                </div>
+       		</td>
+      </tr>
+      <tr></tr>
+    <% }); %>
+  </tbody> 
+</table>
+</div>
+</body>
+<script src="../script/video_upload.js"></script>
+
+</html>
