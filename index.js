@@ -27,10 +27,13 @@ const { render } = require('ejs');
  /**
   * Config DATABASE
   */
-  var pool;
-  pool = new Pool({
-      connectionString: 'postgres://postgres:Wzh990823@localhost/users'
-    })
+pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+      rejectUnauthorized: false
+    }
+    //'postgres://postgres:Wzh990823@localhost/users'
+})
 
 const PORT = process.env.PORT || 5000
 
