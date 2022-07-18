@@ -28,6 +28,7 @@ aws.config.update({
  * Config DATABASE
  */
 pool = new Pool({
+    // connectionString: 'postgres://postgres:Hyq2033221722a@localhost/users'
     connectionString: process.env.DATABASE_URL,
     ssl: {
         rejectUnauthorized: false
