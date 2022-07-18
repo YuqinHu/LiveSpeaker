@@ -2,17 +2,32 @@ var chai = require("chai")
 var chaiHttp = require("chai-http")
 var server = require("../index")
 var should = chai.should()
-
 chai.use(chaiHttp)
+const { isTypedArray } = require('util/types')
 
+// describe('admin', function () {
+//     it('should add a new admin GET /add_admin', async () => {
+//         var res = await chai.request(server).get('/add_admin')
+//         res.should.be.json
+//         res.body.should.be.a('array')
+//     })
+// })
 describe('admin', function () {
-    it('should add a new admin GET /add_admin', async () => {
-        var res = await chai.request(server).get('/add_admin')
-        res.should.be.json
-        res.body.should.be.a('array')
-    })
-})
-
+    it('should add a new admin on POST /add_admin', function (done) {
+        chai.request(server).post('/create_addmin_account').send({ name: 'ian', email: "12@sfu.ca", type: "admin", password: "12345678" })
+            .end(function (error, res) {
+                res.should.have.status(200);
+                // res.body.should.be.json;
+                res.body.should.be.a('array');
+                // expect(res.body).to.eql({});
+                // console.log(res.body.name)
+                res.body.should.have.property('name');
+                // hemail.should.equal('12@sfu.ca')
+                // res.body[0].password.should.equal('123456789')
+                done();
+            });
+    });
+});
 
 // describe('admin', function () {
 //     it('should add a new admin on POST /add_admin', function (done) {

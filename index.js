@@ -1,4 +1,5 @@
 //ver 8.2 M
+var cors = require('cors')
 const express = require('express')
 const aws = require('aws-sdk');
 const fs = require('fs');
@@ -29,11 +30,11 @@ aws.config.update({
  */
 var pool;
 pool = new Pool({
-    //   connectionString: 'postgres://postgres:Wzh990823@localhost/users'
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-        rejectUnauthorized: false
-    }
+    connectionString: 'postgres://postgres:Hyq2033221722a@localhost/users'
+    // connectionString: process.env.DATABASE_URL,
+    // ssl: {
+    //     rejectUnauthorized: false
+    // }
 
 })
 
@@ -44,7 +45,7 @@ app = express()
 // understand json
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
-
+app.use(cors())
 // session info
 app.use(session({
     name: 'session',
@@ -955,5 +956,6 @@ app.get('/review_notes', (req, res) => {
 // })
 
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
+module.exports = app;
         //var test = `insert into sessions (Start_time) values (to_timestamp(${Date.now()} / 1000.0))`
 

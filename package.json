@@ -13,7 +13,10 @@
   "dependencies": {
     "alert": "^5.1.1",
     "aws-sdk": "^2.1176.0",
+    "chai": "^4.3.6",
+    "chai-http": "^4.3.0",
     "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
     "ejs": "^3.1.5",
     "express": "^4.18.1",
     "express-session": "^1.17.3",
