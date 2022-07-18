@@ -1,0 +1,132 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Video Page</title>
+    <link href="./stylesheets/table.css" rel="stylesheet" type="text/css">
+    <link href="./stylesheets/video.css" rel="stylesheet" type="text/css">
+    <link href="./stylesheets/button.css" rel="stylesheet" type="text/css">
+    <link href="./stylesheets/buttonhome.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            font-size: 12px;
+        }
+
+        #nav {
+            display: -webkit-box;
+            display: -moz-box;
+            display: box;
+            margin: auto;
+            margin-top: 100px;
+
+
+        }
+
+        #nav div {
+            margin: auto;
+            width: 300px;
+            -webkit-box-orient: horizontal;
+            -moz-box-orient: horizontal;
+            box-orient: horizontal;
+        }
+
+        ::placeholder {
+            color: rgb(26, 25, 25);
+        }
+    </style>
+</head>
+<header>
+    <form action="/logout" method="get">
+        <input type="submit" value="Logout" id="logout_button">
+    </form>
+    <form action="/list" method="get">
+        <input type="submit" value="View Created Session" id="video_button">
+      </form>
+</header>
+
+<body>
+
+    <br>
+    <h1 style="color: white;">Welcome to user page</h1>
+
+    <div id="nav">
+
+        <div id="box1">
+            <form action="/new_session" method="get">
+                <button class="noselect"><span>Create living <br>session<br>&#9989;</span></button>
+            </form>
+        </div>
+
+        <div id="box2">
+            <button class="noselect" onclick="document.getElementById('join').style.display='block'"><span>Join living
+                    <br>session<br>&#9199;</span></button>
+        </div>
+
+        <div id="box3">
+            <!-- <form action="/list" method="get">
+                <button class="noselect"><span>Review remote <br>video<br>&#8987;</span></button>
+            </form> -->
+            <button class="noselect" onclick="document.getElementById('review').style.display='block'"><span>Review remote <br>video<br>&#9199;</span></button>
+        </div>
+
+    </div>
+
+    <br><br>
+
+    <div id="join" class="w3-modal">
+        <div class="w3-modal-content w3-animate-zoom">
+            <div class="w3-container w3-black w3-display-container">
+                <span onclick="document.getElementById('join').style.display='none'"
+                    class="w3-button w3-display-topright w3-large">x</span>
+                <h1>Enter Session number and password</h1>
+            </div>
+
+            <div class="w3-container">
+                <form action="/session_note" method="post">
+                    <label for="email">Session number</label>
+                    <input type="text" placeholder="session" id="session" name="session">
+
+                    <label for="access_code">Password</label>
+                    <input type="password" placeholder="access_code" id="access_code" name="access_code">
+
+                    <input type="Submit" class="noselect" value="Join" ></input>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    
+    <div id="review" class="w3-modal">
+        <div class="w3-modal-content w3-animate-zoom">
+            <div class="w3-container w3-black w3-display-container">
+                <span onclick="document.getElementById('review').style.display='none'"
+                    class="w3-button w3-display-topright w3-large">x</span>
+                <h1>Enter Session number and password</h1>
+            </div>
+
+            <div class="w3-container">
+                <form action="/review_session_note" method="post">
+                    <label for="email">Session number</label>
+                    <input type="text" placeholder="session" id="session" name="session">
+
+                    <label for="access_code">Password</label>
+                    <input type="password" placeholder="access_code" id="access_code" name="access_code">
+
+                    <input type="Submit" class="noselect" value="Join" ></input>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+
+</html>

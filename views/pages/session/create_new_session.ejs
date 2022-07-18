@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Creat new session</title>
+  <link rel="stylesheet" href="./stylesheets/table.css">
+  <link href="./stylesheets/button.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body>
+  <header>
+    <form action="/logout" method="get">
+      <input type="submit" value="Logout" id="logout_button">
+    </form>
+    <form action="/home" method="get">
+      <input type="submit" value="Home page" id="video_button">
+    </form>
+    <form action="/list" method="get">
+      <input type="submit" value="Session list" id="video_button">
+    </form>
+  </header>
+
+  <div>
+    <div>
+      <br>
+      <h3 style="text-align: center; ">CREATE NEW SESSION</h3>
+    </div>
+    <form name="creat_new_session" id="creat_new_session" title="Creat New Session" action="/addSession" method="post">
+      <table class="center" width="70%" border="1">
+        <tbody>
+          <tr>
+            <td>TITLE:</td>
+            <td><input name="new_session_title" required type="text" id="new_session_title">&nbsp;</td>
+          </tr>
+          <tr>
+            <td>START TIME</td>
+            <td><input type="datetime-local" required min="" name="new_session_start_time" id="new_session_start_time">
+            </td>
+          </tr>
+          <!-- check time function -->
+          <!-- onchange ="check_time('new_session_start_time')" -->
+          <tr>
+            <td>ACCESS CODE</td>
+            <td><input type="text" autocomplete="on" required id="new_session_access_code"
+                name="new_session_access_code" onchange="check_password('new_session_access_code')"></td>
+          </tr>
+          <!-- <tr>
+      <td>UPLOAD PPT/PDF</td>
+      <td><label for="fileField">File:</label>
+        <input type="file" name="fileField" id="fileField">[备注：尚未配置]</td>
+    </tr> -->
+          <tr>
+            <td><input type="submit">&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+        </tbody>
+      </table>
+    </form>
+
+  </div>
+
+</body>
+
+<script>
+
+
+  // check time 
+  // function check_time(input){ 
+  //   var date = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+  //   var isoDate = (new Date(Date.now() - date)).toISOString().slice(0, -1);
+  //   isoDate = isoDate.substr(0,16);
+  //   console.log(isoDate);
+  //   var x = document.getElementById(input).value;
+  //   console.log(x);
+  //   if(x < isoDate){
+  //     alert('You can not create session earlier than now!');
+  //     var temp = document.getElementById(input);
+  //     temp.value = '';
+  //   }
+  // }
+
+
+  function check_password(input_value) {
+    var val = document.getElementById(input_value).value;
+    if (val.length > 10) {
+      alert('Please enter password less than 10 characters');
+      var temp = document.getElementById(input_value);
+      temp.value = '';
+    }
+    if (val.length < 6) {
+      alert('Please enter password greater than 6 characters');
+      var temp = document.getElementById(input_value);
+      temp.value = '';
+    }
+  }
+
+
+
+
+</script>
+
+</html>

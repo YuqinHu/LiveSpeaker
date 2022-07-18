@@ -5,15 +5,21 @@
   <meta charset="utf-8">
   <title>Video Page</title>
   <link href="./stylesheets/video.css" rel="stylesheet" type="text/css">
-  <link href="./stylesheets/button.css" rel="stylesheet" type="text/css">
+
 </head>
 
 <body>
+  <header>
+    <form action="/logout" method="get">
+      <input type="submit" value="Logout" id="logout_button">
+    </form>
+    <form action="/Home" method="get">
+      <input type="submit" value="Home" id="logout_button">
+    </form>
+
+  </header>
 
   <main>
-
-
-
     <div id="input_area">
       <!--input-->
       <form action="/addComment" method="post">
@@ -69,8 +75,7 @@
                     <tbody>
                       <tr>
                         <td>&nbsp;&nbsp;<b>
-                            <%= r.name %> &nbsp; <%= r.date %>/<%= r.month %>/<%= r.year %> &nbsp;<%= r.hours %>:<%=
-                                        r.minutes %>:<%= r.seconds %>
+                            <%= r.name %> &nbsp; <%= r.ts %>
                           </b> </td>
                       </tr>
                       <tr>
@@ -89,9 +94,6 @@
       <br><br>
 
   </main>
-  <form action="/logout" method="get">
-    <button class="noselect"><span>Logout</span></button>
-  </form>
 </body>
 
 </html>

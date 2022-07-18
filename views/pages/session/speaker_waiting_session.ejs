@@ -1,0 +1,113 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>SESSION</title>
+  <style>
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      background: linear-gradient(45deg, #49a09d, #5f2c82);
+      font-family: sans-serif;
+      font-weight: 100;
+    }
+
+    .container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    table {
+      width: 400px;
+      border-collapse: collapse;
+      overflow: hidden;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    #logout_button {
+      width: auto;
+      height: auto;
+      float: right;
+      margin-right: 1%;
+      margin-top: 1%;
+    }
+
+    #video_button {
+      width: auto;
+      height: auto;
+      float: right;
+      margin-right: 1%;
+      margin-top: 1%;
+    }
+  </style>
+</head>
+<header>
+  <form action="/logout" method="get">
+    <input type="submit" value="Logout" id="logout_button">
+  </form>
+  <form action="/home" method="get">
+    <input type="submit" value="Home page" id="video_button">
+  </form>
+  <!-- <form action="/new_session" method="get">
+    <input type="submit" value="New session" id="video_button">
+  </form> -->
+  <form action="/list" method="get">
+    <input type="submit" value="Session list" id="video_button">
+  </form>
+</header>
+
+<body>
+  <div>
+    <div>
+      <br>
+      <h3 style="text-align: center;">SESSION WAITING TO START</h3>
+    </div>
+    <table width="70%" border="2">
+      <tbody>
+        <% rows.forEach(function(r) { %>
+          <tr>
+            <td>TITLE</td>
+            <td>
+              <%= r.title %>
+            </td>
+          </tr>
+          <tr>
+            <td>SESSION ID</td>
+            <td>
+              <%= r.session_id %>
+            </td>
+          </tr>
+          <tr>
+            <td>ACCESS CODE</td>
+            <td>
+              <%= r.access_code %>
+            </td>
+          </tr>
+          <tr>
+            <td>START TIME</td>
+            <td>
+              <%= r.start_time %>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <form action='/go_to_session/<%= r.session_id %>' method='post'>
+                <input type="submit" name="go_to_session" id="go_to_session" value="START"></input>
+              </form>
+            </td>
+          </tr>
+          <% }); %>
+      </tbody>
+    </table>
+  </div>
+</body>
+
+</html>

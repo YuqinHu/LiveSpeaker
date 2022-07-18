@@ -1,0 +1,113 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>SESSION</title>
+  <link rel="stylesheet" href="./stylesheets/sessiontable.css">
+</head>
+
+<body>
+  <header>
+    <form action="/logout" method="get">
+      <input type="submit" value="Logout" id="logout_button">
+    </form>
+    <form action="/home" method="get">
+      <input type="submit" value="Home page" id="video_button">
+    </form>
+    <form action="/new_session" method="get">
+      <input type="submit" value="New session" id="video_button">
+    </form>
+  </header>
+
+  <div>
+    <div>
+      <br>
+      <h3 style="text-align: center;">SESSION LIST</h3>
+    </div>
+    <table>
+      <tbody>
+        <% rows.forEach(function(r) { %>
+          <tr>
+            <td>
+              <div>
+                <table>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <table border="2">
+                          <tbody>
+                            <tr>
+                              <td>TITLE</td>
+                              <td>
+                                <%= r.title %>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>SESSION ID</td>
+                              <td>
+                                <%= r.session_id %>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>ACCESS CODE</td>
+                              <td>
+                                <%= r.access_code %>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>START TIME</td>
+                              <td>
+                                <%= r.start_time %>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>SESSION TYPE</td>
+                              <td>
+                                <%= r.session_type %>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                      <td>
+                        <table>
+                          <tbody>
+                            <tr>
+                              <td>
+                                <form action='/go_to_session_page/<%= r.session_id %>' method='get'>
+                                  <input type="submit" value="GO TO SESSION"></input>
+                                </form>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <form action="/cancel_session/<%= r.session_id %>" methed="get">
+                                  <input type="submit" name="cancel_session" id="cancel_session"
+                                    value="DELETE SESSION"></input>
+                                </form>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <br>
+            </td>
+          </tr>
+      </tbody>
+      <% }); %>
+    </table>
+  </div>
+
+
+
+
+
+
+</body>
+
+</html>
