@@ -1,0 +1,42 @@
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    background: linear-gradient(45deg, #49a09d, #5f2c82);
+    font-family: sans-serif;
+    font-weight: 100;
+}
+
+.container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+table {
+    width: 400px;
+    border-collapse: collapse;
+    overflow: hidden;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#logout_button {
+    width: auto;
+    height: auto;
+    float: right;
+    margin-right: 1%;
+    margin-top: 1%;
+}
+
+#video_button {
+    width: auto;
+    height: auto;
+    float: right;
+    margin-right: 1%;
+    margin-top: 1%;
+}
