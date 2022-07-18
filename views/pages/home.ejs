@@ -7,7 +7,6 @@
     <link href="./stylesheets/table.css" rel="stylesheet" type="text/css">
     <link href="./stylesheets/video.css" rel="stylesheet" type="text/css">
     <link href="./stylesheets/button.css" rel="stylesheet" type="text/css">
-    <link href="./stylesheets/buttonhome.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -48,8 +47,8 @@
         <input type="submit" value="Logout" id="logout_button">
     </form>
     <form action="/list" method="get">
-        <input type="submit" value="View Created Session" id="video_button">
-      </form>
+        <input type="submit" value="View Created Session" id="logout_button">
+    </form>
 </header>
 
 <body>
@@ -74,7 +73,8 @@
             <!-- <form action="/list" method="get">
                 <button class="noselect"><span>Review remote <br>video<br>&#8987;</span></button>
             </form> -->
-            <button class="noselect" onclick="document.getElementById('review').style.display='block'"><span>Review remote <br>video<br>&#9199;</span></button>
+            <button class="noselect" onclick="document.getElementById('review').style.display='block'"><span>Review
+                    remote <br>video<br>&#9199;</span></button>
         </div>
 
     </div>
@@ -97,13 +97,13 @@
                     <label for="access_code">Password</label>
                     <input type="password" placeholder="access_code" id="access_code" name="access_code">
 
-                    <input type="Submit" class="noselect" value="Join" ></input>
+                    <input type="Submit" class="noselect" value="Join"></input>
                 </form>
             </div>
 
         </div>
     </div>
-    
+
     <div id="review" class="w3-modal">
         <div class="w3-modal-content w3-animate-zoom">
             <div class="w3-container w3-black w3-display-container">
@@ -120,7 +120,7 @@
                     <label for="access_code">Password</label>
                     <input type="password" placeholder="access_code" id="access_code" name="access_code">
 
-                    <input type="Submit" class="noselect" value="Join" ></input>
+                    <input type="Submit" class="noselect" value="Join"></input>
                 </form>
             </div>
 
