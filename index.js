@@ -27,13 +27,14 @@ aws.config.update({
 /**
  * Config DATABASE
  */
+var pool;
 pool = new Pool({
-    // connectionString: 'postgres://postgres:Hyq2033221722a@localhost/users'
+    //   connectionString: 'postgres://postgres:Wzh990823@localhost/users'
     connectionString: process.env.DATABASE_URL,
     ssl: {
         rejectUnauthorized: false
     }
-    //'postgres://postgres:Wzh990823@localhost/users'
+
 })
 
 const PORT = process.env.PORT || 5000
@@ -709,8 +710,6 @@ app.get('/session_replay/:id', (req, res) => {
                     //console.log(session_notes)
                     var page_data = { session_video_url, session_notes }
 
-
-
                     // if (error)
                     //     res.end(error);
                     // var session_page_note = { 'rows': results.rows }
@@ -854,13 +853,20 @@ app.post('/review_session_note', (req, res) => {
                             req.session.session_id = login_sessionID;
                             req.session.session_type = results.rows[0]['session_type'];
                             // req.session.access_code = login_access_code;
-                            res.redirect(`/session_replay/${req.session.session_id} ?`)
+                            res.redirect(`/session_replay/${req.session.session_id}?`)
                         }
                         else {
                             req.session.session_id = login_sessionID;
                             req.session.session_type = results.rows[0]['session_type'];
                             res.redirect('/review_notes');
                         }
+                        // pool.query('SELECT NOW()', (error_2, results_2) =>{
+                        //     if(error_2){
+                        //         res.end(error_2);
+                        //     }
+                        //current time >= start time\
+
+                        // })
                     }
                     else {
                         res.redirect('/home');
@@ -878,32 +884,43 @@ app.post('/review_session_note', (req, res) => {
     else {
         res.redirect("/");
     }
-})
-
+});
 
 app.get('/review_notes', (req, res) => {
     if (req.session.uid) {
         if (req.session.session_id && req.session.session_type == "remote") {
-            var user_review_not_query = `SELECT  s_session_id, s_title,s_access_code, s_session_type, s_uid,c_comment_id, c_name, 
-                c_uid, c_comment, c_ts,s_start_time, s_video_url ,  s_video_state, diff, TO_CHAR(diff,'HH24:MI:SS') as diff_string
-                from
-                (select 
-                s.session_id as s_session_id, s.title as s_title,s.access_code as s_access_code, s.session_type as s_session_type, s.uid as s_uid, c.comment_id as c_comment_id, c.name as c_name, 
-                c.uid as c_uid, c.comment as c_comment, c.ts as c_ts,s.start_time as s_start_time, s.video_url as s_video_url , s.video_state as s_video_state,
-                c.ts - s.start_time as diff
-                from sessions s join session_comment c 
-                on s.session_id = '${req.session.session_id}' AND s.session_id = c.session_id) as a where c_uid = '${req.session.uid}'`;
+            pool.query(`SELECT * from session_comment where session_id = '${req.session.session_id}'`, (error_1, results_1) => {
+                if (error_1) {
+                    res.end(error_1);
+                }
+                if (results_1.rows.length > 0) {
+                    var user_review_not_query = `SELECT  s_session_id, s_title,s_access_code, s_session_type, s_uid,c_comment_id, c_name, 
+                    c_uid, c_comment, c_ts,s_start_time, s_video_url ,  s_video_state, diff, TO_CHAR(diff,'HH24:MI:SS') as diff_string
+                    from
+                    (select 
+                    s.session_id as s_session_id, s.title as s_title,s.access_code as s_access_code, s.session_type as s_session_type, s.uid as s_uid, c.comment_id as c_comment_id, c.name as c_name, 
+                    c.uid as c_uid, c.comment as c_comment, c.ts as c_ts,s.start_time as s_start_time, s.video_url as s_video_url , s.video_state as s_video_state,
+                    c.ts - s.start_time as diff
+                    from sessions s join session_comment c 
+                    on s.session_id = '${req.session.session_id}' AND s.session_id = c.session_id) as a where c_uid = '${req.session.uid}'`;
 
-            pool.query(user_review_not_query, (error2, results) => {
-                if (error2) {
-                    res.end(error2);
+                    pool.query(user_review_not_query, (error2, results) => {
+                        if (error2) {
+                            res.end(error2);
+                        }
+
+                        var session_notes = { 'rows': results.rows };
+                        const session_video_url = results.rows[0]['s_video_url'];
+                        var page_data = { session_video_url, session_notes }
+                        res.render('pages/user_session_replay.ejs', page_data);
+                    })
+                }
+                else {
+                    res.redirect(`/session_replay/${req.session.session_id}?`)
                 }
 
-                var session_notes = { 'rows': results.rows };
-                const session_video_url = results.rows[0]['s_video_url'];
-                var page_data = { session_video_url, session_notes }
-                res.render('pages/user_session_replay.ejs', page_data);
-            })
+            });
+
         }
         else {
             delete req.session.session_id;
@@ -915,7 +932,6 @@ app.get('/review_notes', (req, res) => {
         res.redirect("/");
     }
 });
-
 
 
 // app.post('/addReviewComment',(req,res)=>{
