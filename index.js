@@ -12,25 +12,25 @@ const { render } = require('ejs');
 /**
  * Config OSS (AWS S3)
  */
- const BUCKET_REGION = process.env.BUCKET_REGION;
- const OSS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
- const OSS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
- const S3_BUCKET=process.env.S3_BUCKET;
- const OSS_ENDPOINT=process.env.OSS_ENDPOINT;
- 
- aws.config.update({
-     region: BUCKET_REGION,
-     accessKeyId: OSS_KEY_ID,
-     secretAccessKey: OSS_KEY
- });
- 
- /**
-  * Config DATABASE
-  */
+const BUCKET_REGION = process.env.BUCKET_REGION;
+const OSS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
+const OSS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
+const S3_BUCKET = process.env.S3_BUCKET;
+const OSS_ENDPOINT = process.env.OSS_ENDPOINT;
+
+aws.config.update({
+    region: BUCKET_REGION,
+    accessKeyId: OSS_KEY_ID,
+    secretAccessKey: OSS_KEY
+});
+
+/**
+ * Config DATABASE
+ */
 pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: {
-      rejectUnauthorized: false
+        rejectUnauthorized: false
     }
     //'postgres://postgres:Wzh990823@localhost/users'
 })
@@ -62,111 +62,111 @@ app.get('/', (req, res) => res.render('pages/login'))
  */
 //OSS GET
 app.get('/oss/sign-s3', (req, res) => {
-    if(req.session.uid){
+    if (req.session.uid) {
         const s3 = new aws.S3();
         const fileName = req.query['file-name'];
         const fileType = req.query['file-type'];
         const s3Params = {
-        Bucket: S3_BUCKET,
-        Key: fileName,
-        Expires: 60,
-        ContentType: fileType,
-        ACL: 'public-read'
+            Bucket: S3_BUCKET,
+            Key: fileName,
+            Expires: 60,
+            ContentType: fileType,
+            ACL: 'public-read'
         };
-    
+
         s3.getSignedUrl('putObject', s3Params, (err, data) => {
-        if(err){
-            console.log(err);
-            return res.end();
-        }
-        const returnData = {
-            signedRequest: data,
-            url: `https://${S3_BUCKET}.${OSS_ENDPOINT}/${fileName}`
-        };
-        res.write(JSON.stringify(returnData));
-        res.end();
+            if (err) {
+                console.log(err);
+                return res.end();
+            }
+            const returnData = {
+                signedRequest: data,
+                url: `https://${S3_BUCKET}.${OSS_ENDPOINT}/${fileName}`
+            };
+            res.write(JSON.stringify(returnData));
+            res.end();
         });
     }
 });
 
 //OSS (AWS S3) STANDARD UPLOAD
 app.get('/oss/uploader/sign', async (req, res) => {
-    if(req.session.uid){
+    if (req.session.uid) {
         const s3 = new aws.S3();
         const { key, type } = req.query;
         const url = s3.getSignedUrl('putObject', {
-        Bucket: S3_BUCKET,
-        Key: key,
-        Expires: 3600,
-        ContentType: type,
+            Bucket: S3_BUCKET,
+            Key: key,
+            Expires: 3600,
+            ContentType: type,
         });
         res.send({ url });
     }
-  });
+});
 
 //OSS (AWS S3) SESSION VIDEO UPLOADER
 app.get('/oss/uploader/session_video/sign', async (req, res) => {
-    if(req.session.uid){
+    if (req.session.uid) {
         const random = [...Array(30)].map(() => Math.random().toString(36)[2]).join('');
         const s3 = new aws.S3();
         const { key, type, vid } = req.query;
         const video_key = `session_video/session${vid}/uid${req.session.uid}/${random}/${key}`;
 
         //add video URL and OSS PATH to database
-        var addvideo = 
-        `UPDATE sessions 
+        var addvideo =
+            `UPDATE sessions 
         SET video_path = 'session_video/session${vid}/uid${req.session.uid}/${random}/${key}',
         video_url = 'https://${S3_BUCKET}.${OSS_ENDPOINT}/session_video/session${vid}/uid${req.session.uid}/${random}/${key}' 
         where session_id = ${vid}`;
-        pool.query(addvideo, (error,results)=>{
-            if (error){
+        pool.query(addvideo, (error, results) => {
+            if (error) {
                 res.end(error);
             }
         })
 
         //get an upload url and send to client
         const url = s3.getSignedUrl('putObject', {
-        Bucket: S3_BUCKET,
-        Key: video_key,
-        Expires: 3600,
-        ContentType: type,
+            Bucket: S3_BUCKET,
+            Key: video_key,
+            Expires: 3600,
+            ContentType: type,
         });
         res.send({ url });
     }
-  });
+});
 
 //get a login info (for get_session_info.js)
-app.get('/get_login_info',(req,res)=>{
+app.get('/get_login_info', (req, res) => {
     res.send(req.session);
 });
 
 //set video as uploaded
-app.post('/UPLOADER/mark_upload',(req,res)=>{
-    if(req.session.uid){
+app.post('/UPLOADER/mark_upload', (req, res) => {
+    if (req.session.uid) {
         var sessionID = req.body.session_id;
         let marked = `UPDATE sessions SET video_state = 'VIDEO_EXIST' where session_id = ${sessionID}`;
-        pool.query(marked, (error, results) =>{
-            if(error){
+        pool.query(marked, (error, results) => {
+            if (error) {
                 res.end(error);
-            }       
+            }
         })
         res.end();
-    }res.end();
+    } res.end();
 })
 
 //GET video upload page
-app.get('/session_upload/:id',(req,res)=> {
-    if(req.session.uid){
+app.get('/session_upload/:id', (req, res) => {
+    if (req.session.uid) {
         var sessionID = parseInt(req.params.id);
-        pool.query('SELECT * From sessions where session_id = $1', [sessionID], (error, results) =>{
-            if(error){
+        pool.query('SELECT * From sessions where session_id = $1', [sessionID], (error, results) => {
+            if (error) {
                 res.end(error);
             }
-            var result = {'rows':results.rows};
-            res.render('pages/upload/upload.ejs',result);           
+            var result = { 'rows': results.rows };
+            res.render('pages/upload/upload.ejs', result);
         })
     }
-    else{
+    else {
         res.redirect("/");
     }
 });
@@ -187,7 +187,7 @@ app.get('/register', (req, res) => {
 app.get('/new_session', (req, res) => {
     if (req.session.uid) {
         res.render('pages/session/create_new_session')
-    }else{
+    } else {
         res.redirect("/");
     }
 })
@@ -201,10 +201,10 @@ app.post('/addSession', (req, res) => {
         var access_code = req.body.new_session_access_code;
         var start_time = req.body.new_session_start_time;
         var start_time_pa = Date.parse(start_time);
-        
+
         var addSession = `INSERT INTO sessions (UID, Title,access_code,Session_type, Start_time) VALUES ('${UID}','${title}','${access_code}','wait', to_timestamp(${start_time_pa} / 1000.0))`;
-        pool.query(addSession, (error,results)=>{
-            if (error){
+        pool.query(addSession, (error, results) => {
+            if (error) {
                 res.end(error);
             }
             res.redirect('/list');
@@ -215,59 +215,59 @@ app.post('/addSession', (req, res) => {
     }
 })
 
-app.get('/list', (req,res) => {
-    if(req.session.uid){
+app.get('/list', (req, res) => {
+    if (req.session.uid) {
         var UID = req.session.uid;
-        pool.query('SELECT * From sessions where UID = $1', [UID], (error, results) =>{
-        if(error){
-            res.end(error);
-        }
-        var result = { 'rows': results.rows }
-        for(let i = 0; i <results.rows.length; i++ ){
-            var momentObj = moment(result.rows[i]['start_time']);
-            var momentString = momentObj.format('MMMM Do YYYY, h:mm:ss a');
-            result.rows[i]['start_time'] = momentString;
-        }
-        res.render('pages/session/list_session', result)
-    })
-    }
-    else{
-        res.redirect('/');
-    }
-    
-}) 
-
-app.get('/go_to_session_page/:id', (req,res)=>{
-    if(req.session.uid){
-        var sessionID = parseInt(req.params.id);
-        //console.log(sessionID)
-        pool.query('SELECT * From sessions where session_id = $1', [sessionID], (error, results) =>{
-            if(error){
+        pool.query('SELECT * From sessions where UID = $1', [UID], (error, results) => {
+            if (error) {
                 res.end(error);
             }
-            if(req.session.uid == results.rows[0]['uid']){
-                var result = {'rows':results.rows};
-                if(results.rows[0]['session_type'] == 'wait'){
-                    for(let i = 0; i <results.rows.length; i++ ){
+            var result = { 'rows': results.rows }
+            for (let i = 0; i < results.rows.length; i++) {
+                var momentObj = moment(result.rows[i]['start_time']);
+                var momentString = momentObj.format('MMMM Do YYYY, h:mm:ss a');
+                result.rows[i]['start_time'] = momentString;
+            }
+            res.render('pages/session/list_session', result)
+        })
+    }
+    else {
+        res.redirect('/');
+    }
+
+})
+
+app.get('/go_to_session_page/:id', (req, res) => {
+    if (req.session.uid) {
+        var sessionID = parseInt(req.params.id);
+        //console.log(sessionID)
+        pool.query('SELECT * From sessions where session_id = $1', [sessionID], (error, results) => {
+            if (error) {
+                res.end(error);
+            }
+            if (req.session.uid == results.rows[0]['uid']) {
+                var result = { 'rows': results.rows };
+                if (results.rows[0]['session_type'] == 'wait') {
+                    for (let i = 0; i < results.rows.length; i++) {
                         var momentObj = moment(result.rows[i]['start_time']);
                         var momentString = momentObj.format('MMMM Do YYYY, h:mm:ss a');
                         result.rows[i]['start_time'] = momentString;
                     }
-                    res.render('pages/session/speaker_waiting_session',result);
+                    res.render('pages/session/speaker_waiting_session', result);
                 }///
-                else if(results.rows[0]['session_type'] == 'live'){
-                    for(let i = 0; i <results.rows.length; i++ ){
+                else if (results.rows[0]['session_type'] == 'live') {
+                    for (let i = 0; i < results.rows.length; i++) {
                         var momentObj = moment(result.rows[i]['start_time']);
                         var momentString = momentObj.format('MMMM Do YYYY, h:mm:ss a');
                         result.rows[i]['start_time'] = momentString;
                     }
-                    res.render('pages/session/live_session',result);
+                    res.render('pages/session/live_session', result);
                 }
-                else{
-                    if(results.rows[0]['video_state'] == 'VIDEO_EXIST'){
+                else {
+                    if (results.rows[0]['video_state'] == 'VIDEO_EXIST') {
                         res.redirect(`/session_replay/${sessionID}?`)
                     }
-                    else{
+                    else {
                         res.redirect(`/session_upload/${sessionID}?`)
                     }
                 }
@@ -298,7 +298,7 @@ app.get('/go_to_session_page/:id', (req,res)=>{
                 //                     var momentString = momentObj.format('MMMM Do YYYY, h:mm:ss a');
                 //                     result.rows[i]['ts'] = momentString;
                 //                 }
-                               
+
                 //             }
                 //             req.session.session_id = sessionID;
                 //             res.render('pages/session_replay.ejs', page_data);
@@ -309,9 +309,9 @@ app.get('/go_to_session_page/:id', (req,res)=>{
                 //         // const page_data = {result,video_url}
 
                 //         // res.render('pages/session_replay.ejs', session_page_note);
-                        
-                        
-                        
+
+
+
                 //         /////////////////////////////////////
                 //     }else{
                 //         // res.redirect(`/session_upload/${sessionID}?`);
@@ -322,21 +322,21 @@ app.get('/go_to_session_page/:id', (req,res)=>{
                 // ///check live   
                 // //}
             }
-            else{
+            else {
                 res.redirect('/home');
             }
         })
     }
-    else{
+    else {
         res.redirect("/");
     }
 });
 
-app.get('/cancel_session/:id', (req, res)=>{
-    if(req.session.uid){
+app.get('/cancel_session/:id', (req, res) => {
+    if (req.session.uid) {
         var sessionID = parseInt(req.params.id);
-        pool.query('DELETE From sessions where session_id = $1', [sessionID], (error, results) =>{
-            if(error){
+        pool.query('DELETE From sessions where session_id = $1', [sessionID], (error, results) => {
+            if (error) {
                 res.end(error);
             }
             pool.query(`DELETE FROM session_comment WHERE session_id=$1`, [sessionID], function (error, result) {
@@ -347,60 +347,60 @@ app.get('/cancel_session/:id', (req, res)=>{
             })
         });
     }
-    else{
+    else {
         res.redirect("/");
     }
 });
 
-app.post('/go_to_session/:id', (req,res)=>{
-    if(req.session.uid){
+app.post('/go_to_session/:id', (req, res) => {
+    if (req.session.uid) {
         var sessionID = parseInt(req.params.id);
-            pool.query('SELECT * From sessions where session_id = $1', [sessionID], (error, results) =>{
-                if(error){
-                    res.end(error);
+        pool.query('SELECT * From sessions where session_id = $1', [sessionID], (error, results) => {
+            if (error) {
+                res.end(error);
+            }
+            var result = { 'rows': results.rows };
+            pool.query('SELECT NOW()', (error_2, results_2) => {
+                if (error_2) {
+                    res.end(error_2);
                 }
-                var result = {'rows':results.rows};
-                pool.query('SELECT NOW()', (error_2, results_2) =>{
-                    if(error_2){
-                        res.end(error_2);
-                    }
-                    //current time >= start time
-                    if(results_2.rows[0]['now'] >= results.rows[0]['start_time']){
-                        pool.query(`UPDATE sessions SET session_type = $1 where session_id = $2` , ['live',sessionID], (err, results1)=>{
-                            if(err){
-                                res.end(err);
-                            }
-                        })
-                        for(let i = 0; i <results.rows.length; i++ ){
-                            var momentObj = moment(result.rows[i]['start_time']);
-                            var momentString = momentObj.format('MMMM Do YYYY, h:mm:ss a');
-                            result.rows[i]['start_time'] = momentString;
+                //current time >= start time
+                if (results_2.rows[0]['now'] >= results.rows[0]['start_time']) {
+                    pool.query(`UPDATE sessions SET session_type = $1 where session_id = $2`, ['live', sessionID], (err, results1) => {
+                        if (err) {
+                            res.end(err);
                         }
-                        res.render('pages/session/live_session',result);
+                    })
+                    for (let i = 0; i < results.rows.length; i++) {
+                        var momentObj = moment(result.rows[i]['start_time']);
+                        var momentString = momentObj.format('MMMM Do YYYY, h:mm:ss a');
+                        result.rows[i]['start_time'] = momentString;
                     }
-                    else{
-                        res.send("The session is not ready!")
-                    }
-                })
-                
+                    res.render('pages/session/live_session', result);
+                }
+                else {
+                    res.send("The session is not ready!")
+                }
             })
+
+        })
     }
-    else{
+    else {
         res.redirect("/");
     }
 });
 
-app.post('/end_session/:id', (req,res)=>{
-    if(req.session.uid){
+app.post('/end_session/:id', (req, res) => {
+    if (req.session.uid) {
         var sessionID = parseInt(req.params.id);
-        pool.query(`UPDATE sessions SET session_type = $1 where session_id = $2` , ['remote',sessionID], (error, results) =>{
-            if(error){
+        pool.query(`UPDATE sessions SET session_type = $1 where session_id = $2`, ['remote', sessionID], (error, results) => {
+            if (error) {
                 res.end(error);
             }
             res.redirect('/list');
-        })    
+        })
     }
-    else{
+    else {
         res.redirect("/");
     }
 });
@@ -512,14 +512,14 @@ app.get('/view_comments', (req, res) => {
             pool.query('Select * from  session_comment', (error, results) => {
                 if (error)
                     res.end(error);
-                var result = { 'rows': results.rows}
-                if(results.rows.length > 0){
-                    for(let i = 0; i <results.rows.length; i++ ){
+                var result = { 'rows': results.rows }
+                if (results.rows.length > 0) {
+                    for (let i = 0; i < results.rows.length; i++) {
                         var momentObj = moment(result.rows[i]['ts']);
                         var momentString = momentObj.format('MMMM Do YYYY, h:mm:ss a');
                         result.rows[i]['ts'] = momentString;
                     }
-                   
+
                 }
                 res.render('pages/table_comments', result);
             })
@@ -586,14 +586,14 @@ app.get('/logout', (req, res) => {
     res.redirect('/');
 })
 
-app.get('/home', (req,res)=>{
-    if(req.session.uid){
+app.get('/home', (req, res) => {
+    if (req.session.uid) {
         delete req.session.session_id;
         delete req.session.session_type;
         res.render('pages/home');
 
     }
-    else{
+    else {
         res.redirect('/');
     }
 });
@@ -617,7 +617,7 @@ app.get('/home', (req,res)=>{
 //                     var momentString = momentObj.format('MMMM Do YYYY, h:mm:ss a');
 //                     result.rows[i]['ts'] = momentString;
 //                 }
-               
+
 //             }
 //             res.render('pages/video.ejs', result);
 //         })
@@ -633,8 +633,8 @@ app.get('/home', (req,res)=>{
  * noneAdmin user must match req.session.session_id and request session id
  * 
  */
-app.get('/session_replay/:id', (req,res)=>{
-    if(req.session.uid){
+app.get('/session_replay/:id', (req, res) => {
+    if (req.session.uid) {
         var sessionID = parseInt(req.params.id);
         // if(!(req.session.type == "admin" || req.session.type == "superadmin")){
         //     if (!(req.session.session_id)){
@@ -657,7 +657,7 @@ app.get('/session_replay/:id', (req,res)=>{
         //     from sessions s join session_comment c 
         //     on s.session_id = '${sessionID}' AND s.session_id = c.session_id) as a`;
 
-         //var session_que_join_none_admin = `SELECT * from sessions where session_id = '${sessionID}'`;
+        //var session_que_join_none_admin = `SELECT * from sessions where session_id = '${sessionID}'`;
         // `
         //     SELECT  s_session_id, s_title,s_access_code, s_session_type, s_uid,c_comment_id, c_name, 
         //     c_uid, c_comment, c_ts,s_start_time, s_video_url ,  s_video_state, diff, TO_CHAR(diff,'HH24:MI:SS') as diff_string
@@ -669,7 +669,7 @@ app.get('/session_replay/:id', (req,res)=>{
         //     from sessions s join session_comment c 
         //     on s.session_id = '${sessionID}' AND s.session_id = c.session_id) as a where c_uid = '${req.session.uid}'`;
         //     //
-    
+
         var session_que = `SELECT * From sessions where session_id = '${sessionID}'`
 
         //var sql_que;
@@ -679,58 +679,58 @@ app.get('/session_replay/:id', (req,res)=>{
         //     sql_que = session_que_join_none_admin;
         // }
 
-        pool.query(session_que, (error, results) =>{
-            if(error){
+        pool.query(session_que, (error, results) => {
+            if (error) {
                 res.end(error);
             }
             //console.log(results)
             // if(req.session.uid == results.rows[0]['uid']){
-                var result = {'rows':results.rows};
+            var result = { 'rows': results.rows };
 
-                //console.log(results.rows[0]['video_state'])
-                if(results.rows[0]['session_type'] == 'wait' || results.rows[0]['session_type'] == 'live'){
-                    res.end();
-                }/// 
-                else{
-                    var session_notes;
-                    const session_video_url = results.rows[0]['video_url'];
-                    //const session_start_time = results.rows[0]['start_time'];
-                    if(results.rows[0]['video_state'] == 'VIDEO_EXIST'){
-                        //if (req.session.type == "admin" || req.session.type == "superadmin") {
-                            //var getCommentQuery = 'Select * from  session_comment';
-                        //}
-                        //else {
-                        var getCommentQuery = `Select * from  session_comment WHERE uid = '${req.session.uid}'`;
-                        //}
-                        // pool.query(session_que_join, (error, session_page_note) => {
-                            //console.log(results)
-                            session_notes = results;
-                            //console.log(session_notes)
-                            var page_data={session_video_url, session_notes}
+            //console.log(results.rows[0]['video_state'])
+            if (results.rows[0]['session_type'] == 'wait' || results.rows[0]['session_type'] == 'live') {
+                res.end();
+            }/// 
+            else {
+                var session_notes;
+                const session_video_url = results.rows[0]['video_url'];
+                //const session_start_time = results.rows[0]['start_time'];
+                if (results.rows[0]['video_state'] == 'VIDEO_EXIST') {
+                    //if (req.session.type == "admin" || req.session.type == "superadmin") {
+                    //var getCommentQuery = 'Select * from  session_comment';
+                    //}
+                    //else {
+                    var getCommentQuery = `Select * from  session_comment WHERE uid = '${req.session.uid}'`;
+                    //}
+                    // pool.query(session_que_join, (error, session_page_note) => {
+                    //console.log(results)
+                    session_notes = results;
+                    //console.log(session_notes)
+                    var page_data = { session_video_url, session_notes }
 
 
 
-                            // if (error)
-                            //     res.end(error);
-                            // var session_page_note = { 'rows': results.rows }
-                            // if(session_page_note.rows.length > 0){
-                            //     for(let i = 0; i <results.rows.length; i++ ){
-                            //         var momentObj = moment(session_page_note.rows[i]['ts']);
-                            //         var momentString = momentObj.format('MMMM Do YYYY, h:mm:ss a');
-                            //         result.rows[i]['ts'] = momentString;
-                            //     }
-                               
-                            // }
-                            req.session.session_id = sessionID;
-                            res.render('pages/session_replay.ejs', page_data);
-                        // })
-                    }else{
-                        res.redirect("/ERROR.html")
-                        // res.end()
-                    }
+                    // if (error)
+                    //     res.end(error);
+                    // var session_page_note = { 'rows': results.rows }
+                    // if(session_page_note.rows.length > 0){
+                    //     for(let i = 0; i <results.rows.length; i++ ){
+                    //         var momentObj = moment(session_page_note.rows[i]['ts']);
+                    //         var momentString = momentObj.format('MMMM Do YYYY, h:mm:ss a');
+                    //         result.rows[i]['ts'] = momentString;
+                    //     }
+
+                    // }
+                    req.session.session_id = sessionID;
+                    res.render('pages/session_replay.ejs', page_data);
+                    // })
+                } else {
+                    res.redirect("/ERROR.html")
+                    // res.end()
                 }
-                //else{
-                ///check live
+            }
+            //else{
+            ///check live
 
             // }
 
@@ -739,7 +739,7 @@ app.get('/session_replay/:id', (req,res)=>{
             // }
         })
     }
-    else{
+    else {
         res.redirect("/");
     }
 });
@@ -753,24 +753,24 @@ app.post('/session_note', (req, res) => {
                 if (error) {
                     res.end(error);
                 }
-                
+
                 if (results.rows.length > 0) {
                     if (results.rows[0]['session_type'] == "live") {
                         // pool.query('SELECT NOW()', (error_2, results_2) =>{
                         //     if(error_2){
                         //         res.end(error_2);
-                            // }
-                            //current time >= start time\
-                            req.session.session_id = login_sessionID;
-                            req.session.session_type = results.rows[0]['session_type'];
-                            // req.session.access_code = login_access_code;
-                            res.redirect('/notes'); 
+                        // }
+                        //current time >= start time\
+                        req.session.session_id = login_sessionID;
+                        req.session.session_type = results.rows[0]['session_type'];
+                        // req.session.access_code = login_access_code;
+                        res.redirect('/notes');
                         //})
                     }
-                    else if(results.rows[0]['session_type'] == "wait"){
+                    else if (results.rows[0]['session_type'] == "wait") {
                         res.send('Please wait the session start!')
                     }
-                    else{
+                    else {
                         res.redirect('/home');
                     }
                 }
@@ -778,27 +778,26 @@ app.post('/session_note', (req, res) => {
                     res.send("Incorrect session ID or Password!");
                 }
             })
+        }
+        else {
+            res.send('Please enter Session ID and Password!');
+        }
     }
     else {
-        res.send('Please enter Session ID and Password!');
+        res.redirect("/");
     }
-    }
-else {
-    res.redirect("/");
-}
 })
 
-app.get('/notes', (req,res)=>{
-    if (req.session.uid ) {
-        if(req.session.session_id && req.session.session_type == 'live')
-        {
+app.get('/notes', (req, res) => {
+    if (req.session.uid) {
+        if (req.session.session_id && req.session.session_type == 'live') {
             pool.query(`Select * from  session_comment WHERE session_id = '${req.session.session_id}' and uid = '${req.session.uid}'`, (error2, results_2) => {
-                if(error2){
+                if (error2) {
                     res.end(error2);
                 }
-                var result = { 'rows': results_2.rows};
-                if(results_2.rows.length > 0){
-                    for(let i = 0; i <results_2.rows.length; i++ ){
+                var result = { 'rows': results_2.rows };
+                if (results_2.rows.length > 0) {
+                    for (let i = 0; i < results_2.rows.length; i++) {
                         var momentObj = moment(results_2.rows[i]['ts']);
                         var momentString = momentObj.format('MMMM Do YYYY, h:mm:ss a');
                         results_2.rows[i]['ts'] = momentString;
@@ -807,35 +806,35 @@ app.get('/notes', (req,res)=>{
                 res.render('pages/notes', result);
             })
         }
-        else{
+        else {
             delete req.session.session_id;
             delete req.session.session_type;
             res.redirect("/home");
-        }    
+        }
     }
-    else{
+    else {
         res.redirect("/");
     }
 });
 
-app.post('/addComment',(req,res)=>{
-    if(req.session.uid){
+app.post('/addComment', (req, res) => {
+    if (req.session.uid) {
         //console.log("post: Add Comment");
         var uid = req.session.uid;
         var name = req.session.username;
         var sessionID = req.session.session_id;
         var comment = req.body.new_comment_comment;
         var addComment = `INSERT INTO session_comment (session_id, name, uid, comment) VALUES ('${sessionID}','${name}','${uid}','${comment}')`;
-        pool.query(addComment, (error,results)=>{
-            if (error){
+        pool.query(addComment, (error, results) => {
+            if (error) {
                 res.end(error);
             }
             res.redirect('/notes');
-        })   
+        })
     }
-    else{
+    else {
         res.redirect("/");
-    } 
+    }
 })
 
 app.post('/review_session_note', (req, res) => {
@@ -847,21 +846,22 @@ app.post('/review_session_note', (req, res) => {
                 if (error) {
                     res.end(error);
                 }
-                
+
                 if (results.rows.length > 0) {
                     if (results.rows[0]['session_type'] == "remote") {
-                        // pool.query('SELECT NOW()', (error_2, results_2) =>{
-                        //     if(error_2){
-                        //         res.end(error_2);
-                        //     }
-                            //current time >= start time\
+                        if (results.rows[0]['uid'] == req.session.uid) {
                             req.session.session_id = login_sessionID;
                             req.session.session_type = results.rows[0]['session_type'];
                             // req.session.access_code = login_access_code;
-                            res.redirect('/review_notes'); 
-                        // })
+                            res.redirect(`/session_replay/${req.session.session_id} ?`)
+                        }
+                        else {
+                            req.session.session_id = login_sessionID;
+                            req.session.session_type = results.rows[0]['session_type'];
+                            res.redirect('/review_notes');
+                        }
                     }
-                    else{
+                    else {
                         res.redirect('/home');
                     }
                 }
@@ -869,21 +869,20 @@ app.post('/review_session_note', (req, res) => {
                     res.send("Incorrect session ID or Password!");
                 }
             })
+        }
+        else {
+            res.send('Please enter Session ID and Password!');
+        }
     }
     else {
-        res.send('Please enter Session ID and Password!');
+        res.redirect("/");
     }
-    }
-else {
-    res.redirect("/");
-}
 })
 
 
-app.get('/review_notes', (req,res)=>{
-    if (req.session.uid ) {
-        if(req.session.session_id && req.session.session_type == "remote")
-        {
+app.get('/review_notes', (req, res) => {
+    if (req.session.uid) {
+        if (req.session.session_id && req.session.session_type == "remote") {
             var user_review_not_query = `SELECT  s_session_id, s_title,s_access_code, s_session_type, s_uid,c_comment_id, c_name, 
                 c_uid, c_comment, c_ts,s_start_time, s_video_url ,  s_video_state, diff, TO_CHAR(diff,'HH24:MI:SS') as diff_string
                 from
@@ -895,23 +894,23 @@ app.get('/review_notes', (req,res)=>{
                 on s.session_id = '${req.session.session_id}' AND s.session_id = c.session_id) as a where c_uid = '${req.session.uid}'`;
 
             pool.query(user_review_not_query, (error2, results) => {
-                if(error2){
+                if (error2) {
                     res.end(error2);
                 }
 
-                var session_notes = { 'rows': results.rows};
+                var session_notes = { 'rows': results.rows };
                 const session_video_url = results.rows[0]['s_video_url'];
-                var page_data={session_video_url, session_notes}
+                var page_data = { session_video_url, session_notes }
                 res.render('pages/user_session_replay.ejs', page_data);
             })
         }
-        else{
+        else {
             delete req.session.session_id;
             delete req.session.session_type;
             res.redirect("/home");
-        }    
+        }
     }
-    else{
+    else {
         res.redirect("/");
     }
 });
@@ -941,4 +940,3 @@ app.get('/review_notes', (req,res)=>{
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
         //var test = `insert into sessions (Start_time) values (to_timestamp(${Date.now()} / 1000.0))`
 
-        
