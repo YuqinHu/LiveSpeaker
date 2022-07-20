@@ -30,7 +30,7 @@ aws.config.update({
  */
 var pool;
 pool = new Pool({
-    connectionString: 'postgres://postgres:Hyq2033221722a@localhost/users'
+    connectionString: 'postgres://postgres:ljx135136@localhost/users'
     // connectionString: process.env.DATABASE_URL,
     // ssl: {
     //     rejectUnauthorized: false
@@ -45,7 +45,7 @@ app = express()
 // understand json
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
-app.use(cors())
+app.use("/", cors());
 // session info
 app.use(session({
     name: 'session',
@@ -59,6 +59,30 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
 app.get('/', (req, res) => res.render('pages/login'))
+
+
+// For testing
+app.get('/getAllUser', async (req,res)=> {
+    let getUserQuery = 'SELECT * FROM usr;';
+    pool.query(getUserQuery,(error, result)=>{
+        if(error)
+            res.end(error);
+        let results = result.rows;
+        res.json(results);
+  });
+})
+
+app.get('/getAllcomment', async (req,res)=> {
+    let getUserQuery = 'SELECT * FROM usr;';
+    pool.query(getUserQuery,(error, result)=>{
+        if(error)
+            res.end(error);
+        let results = result.rows;
+        res.json(results);
+  });
+})
+
+
 
 /**
  * Function relate to OSS (AWS S3)
@@ -173,6 +197,7 @@ app.get('/session_upload/:id', (req, res) => {
         res.redirect("/");
     }
 });
+
 ////////////////////////////////////////////////
 
 
@@ -408,11 +433,7 @@ app.post('/end_session/:id', (req, res) => {
     }
 });
 
-app.get('/create_account', (req, res) => {
-    res.render('pages/create_account')
-})
-
-app.post('/create_account', (req, res) => {
+app.post('/create_account', async (req, res) => {
     var usr = req.body
     pool.query('INSERT INTO usr (name, email, type, password) VALUES ($1, $2, $3, $4)',
         [usr.name, usr.email, 'user', usr.password], function (error, result) {
@@ -421,7 +442,41 @@ app.post('/create_account', (req, res) => {
             }
             res.render('pages/correct')
         })
+        
 })
+
+
+
+// app.post('/create_account', (req, res) => {
+//     var usr = req.body 
+//     // var userquery = `INSERT INTO usr (name, email, type, password) VALUES ('${usr.name}','${usr.email}', 'user', '${usr.password}')`
+//     // try{
+//     //     const result = pool.query(userinsertquery) 
+
+//     //     res.render('pages/correct')
+    
+//     //     var ret_obj = [{'name': usr.name, 'email': usr.email, 'password': usr.password}]
+//     //     res.json(ret_obj)
+//     // }
+//     // catch (error) {
+//         //     res.render('pages/incorrect')
+//     // }
+//     var user = [{'name':usr.name, 'email':usr.email, 'password':usr.password}]
+//     res.json(user)
+//     pool.query('INSERT INTO usr (name, email, type, password) VALUES ($1, $2, $3, $4)',
+//     [usr.name, usr.email, 'user', usr.password], function (error, result) {
+        
+//         // ob = {'name':usr.name, 'email':usr.email, 'password':usr.password}
+        
+        
+//         if (error) {
+//             res.render('pages/incorrect')
+//             return
+//         }
+//         res.render('pages/correct')
+//     })
+// })
+
 
 app.get('/table', (req, res) => {
     if (req.session.uid) {
@@ -448,6 +503,7 @@ app.get('/table', (req, res) => {
 app.post('/delete/:id', function (req, res) {
     if (req.session.uid) {
         const uid = parseInt(req.params['id']);
+        console.log(req.params)
         pool.query(`DELETE FROM usr WHERE uid=$1`, [uid], function (error, result) {
             if (error) {
                 res.send(error);
