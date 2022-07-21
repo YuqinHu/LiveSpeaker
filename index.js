@@ -30,11 +30,11 @@ aws.config.update({
  */
 var pool;
 pool = new Pool({
-    connectionString: 'postgres://postgres:ljx135136@localhost/users'
-    // connectionString: process.env.DATABASE_URL,
-    // ssl: {
-    //     rejectUnauthorized: false
-    // }
+    // connectionString: 'postgres://postgres:ljx135136@localhost/users'
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false
+    }
 
 })
 
