@@ -1,99 +1,177 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
+  <!-- Required meta tags -->
   <meta charset="utf-8">
-  <title>Video Page</title>
-  <link href="./stylesheets/video.css" rel="stylesheet" type="text/css">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Notes</title>
+  <!-- plugins:css -->
+  <%- include ("../partials/_plugins_css.ejs") %>
+    <!-- endinject -->
+    <!-- plugin css for this page -->
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="/assets/css/shared/style.css">
+    <!-- endinject -->
+    <!-- Layout styles -->
+    <link rel="stylesheet" href="/assets/css/shared/dashboard-style.css">
+    <!-- End Layout styles -->
+    <!-- plugins:headjs -->
+    <%- include ("../partials/_plugins_head_js.ejs") %>
+      <!-- endinject -->
 </head>
 
 <body>
-  <header>
-    <form action="/logout" method="get">
-      <input type="submit" value="Logout" id="logout_button">
-    </form>
-    <form action="/Home" method="get">
-      <input type="submit" value="Home" id="logout_button">
-    </form>
-
-  </header>
-
-  <main>
-    <div id="input_area">
-      <!--input-->
-      <form action="/addComment" method="post">
-
-        <table border="0" id="input_table" class="big_table">
-          <tbody>
-            <tr>
-              <h3>Write notes here</h3>
-            </tr>
-            <tr>
-              <td>
-                <!--
-        	<input name = "new_comment_user_name" type="text">
-    		<input name = "new_comment_uid" type="number">
--->
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <table border="0" class="big_table">
-                  <tbody>
-                    <tr>
-                      <td><textarea name="new_comment_comment"></textarea></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <button name="submit_new_comment" type="submit" class="button" class="noselect"><span>submit
-                          </span></button>
-
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </form>
-    </div>
-
-    <div class="all_comment_area">
-      <!--show comment-->
-
-      <h3>All Notes</h3>
-      <!--  -->
-      <table border="0" id="new_comment_table">
-        <tbody>
-          <% rows.forEach(function(r) { %>
-            <tr>
-              <td>
-                <div id="single_comment">
-                  <table border="0">
-                    <tbody>
-                      <tr>
-                        <td>&nbsp;&nbsp;<b>
-                            <%= r.name %> &nbsp; <%= r.ts %>
-                          </b> </td>
-                      </tr>
-                      <tr>
-                        <td><br>&nbsp;&nbsp;<%= r.comment %><br><br></td>
-                      </tr>
-                    </tbody>
-                  </table>
-
+  <div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+    <%- include ("../partials/_navbar.ejs") %>
+      <!-- partial -->
+      <div class="container-fluid page-body-wrapper">
+        <!-- partial:partials/_sidebar.html -->
+        <%- include ("../partials/_sidebar.ejs") %>
+          <!-- partial -->
+          <div class="main-panel">
+            <div class="content-wrapper">
+              <!-- Page Title Header Starts-->
+              <div class="row page-title-header">
+                <div class="col-12">
+                  <div class="page-header">
+                    <h4 class="page-title">Notes</h4>
+                  </div>
                 </div>
+                <div class="col-md-12">
+                  <div class="page-header-toolbar">
+                    <div class="sort-wrapper" style="float:left">
+                      <button type="submit" class="btn btn-secondary toolbar-item"
+                        onclick="javascript:window.location.href='/home'">Back
+                      </button>
+                      <div class="dropdown ml-3 toolbar-item">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownexport"
+                          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Tools</button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownexport">
+                          <a class="dropdown-item" href="/web_tools/calculator.html" target="_blank">Graphing
+                            Calculator</a>
+                          <!-- <a class="dropdown-item" href="#">Export as DOCX</a>
+                    <a class="dropdown-item" href="#">Export as CDR</a> -->
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Page Title Header Ends-->
+              <div class="row">
+                <div class="col-12 stretch-card" id="attachment_box" style="display: none;">
+                  <div class="card">
+                    <div class="card-body">
+                      <h4 class="card-title">Attachment File</h4>
+                      <div>
+                        <a href="/error/cannot_get_attachment.html" id="download_attachment" target="_blank">
+                          <button type="button" class="btn btn-dark btn-fw">
+                            <i class="mdi mdi-cloud-download"></i>Download
+                          </button>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-12 grid-margin stretch-card">
+                  <div class="card">
+                    <div class="card-body">
+                      <h4 class="card-title">Add Notes</h4>
+                      <form class="forms-sample" action="/addComment" method="post">
+                        <div class="form-group">
+                          <textarea class="form-control" name="new_comment_comment" id="new_comment_comment"
+                            rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary col-sm-12">Add</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12 grid-margin stretch-card">
+                  <div class="card">
+                    <div class="card-body">
+                      <h4 class="card-title">All Contacts</h4>
+                      <div>
+                        <% rows.forEach(function(r) { %>
+                          <div style="width: 100%; border-radius:0.2rem;" class="div-hover"
+                            onMouseOver="javascript:diaplay_button_box('<%= r.comment_id %>')"
+                            onMouseOut="javascript:hide_button_box('<%= r.comment_id %>')">
+                            <table width="100%" class="table table-borderless">
+                              <tbody>
+                                <tr>
+                                  <td>
+                                    <div style="width: 100%; text-align: left">
+                                      <%= r.name %> &nbsp; <%= r.ts %>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div style="width: 100%; text-align: right; visibility: hidden"
+                                      id="button_box_<%= r.comment_id %>">
+                                      <form action="/delete_comment_live/<%= r.comment_id %>" method="post">
 
-              </td>
-            </tr>
-        </tbody>
-        <% }); %>
-      </table>
-      <br><br>
+                                        <button id="delete_button_<%= r.comment_id %>" type="submit"
+                                          class="btn btn-icons btn-inverse-secondary">
+                                          <i class="fa fa-trash-o"></i>
+                                        </button>
+                                      </form>
+                                    </div>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td colspan="2">
+                                    <%= r.comment %><br><br><br>
+                                  </td>
 
-  </main>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                          <% }); %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+      <!-- content-wrapper ends -->
+      <!-- partial:partials/_footer.html -->
+      <%- include ("../partials/_footer.ejs") %>
+        <!-- partial -->
+  </div>
+  <!-- main-panel ends -->
+  </div>
+  <!-- page-body-wrapper ends -->
+  </div>
+  <!-- container-scroller -->
+  <!-- plugins:js -->
+  <%- include ("../partials/_plugins_js.ejs") %>
+    <!-- endinject -->
+    <!-- Plugin js for this page-->
+    <!-- End plugin js for this page-->
+    <!-- inject:js -->
+    <script src="/assets/js/shared/off-canvas.js"></script>
+    <script src="/assets/js/shared/misc.js"></script>
+    <!-- endinject -->
+    <!-- Custom js for this page-->
+    <script src="/assets/js/shared/dashboard.js"></script>
+    <!-- End custom js for this page-->
+    <script src="/script/display_attachment.js"></script>
+
+    <script>
+      function diaplay_button_box(id) {
+        let element_id = `button_box_${id}`
+        document.getElementById(element_id).style.visibility = "visible";
+      }
+    
+      function hide_button_box(id) {
+        let element_id = `button_box_${id}`
+        document.getElementById(element_id).style.visibility = "hidden";
+      }
+    </script>
 </body>
-
 </html>

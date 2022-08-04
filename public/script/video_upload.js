@@ -66,3 +66,35 @@ async function upload() {
         alert(`Upload failed: ${e}`);
     }
 }
+
+async function new_upload() {
+    await check_login();
+
+    const file = document.getElementById('selected_file').files[0];
+    //display uploading state
+    document.getElementById("uploading_sign").style.visibility="visible";
+    var vid =  document.getElementById("vid").value;
+
+    // Make sure a file is selected
+    if (!file){
+        alert("Please select a file!");
+        document.getElementById("uploading_sign").style.visibility="hidden";
+        return;
+    };
+    // Fetch the signed url
+    const key = file.name;
+    const response = await axios.get(`/oss/uploader/session_video/sign?key=${key}&type=${file.type}&vid=${vid}`);
+    const url = response.data.url;
+    try {
+        // Attempt the upload
+        const options = { headers: { 'Content-Type': file.type } };
+        await axios.put(url, file, options);
+        document.getElementById("uploading_sign").style.visibility="hidden";
+        alert("Finish!");
+        await postData(vid); 
+        window.location.replace("/list");
+    }catch(e){
+        document.getElementById("uploading_sign").style.visibility="hidden";
+        alert(`Upload failed: ${e}`);
+    }
+}

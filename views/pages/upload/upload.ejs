@@ -1,58 +1,131 @@
-<!doctype html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>UPLOAD SESSION VIDEO</title>
+<!DOCTYPE html>
+<html lang="en">
 
-<!-- Don't move the position of the line below ! -->
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="../script/get_session_info.js"></script>
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Upload recording</title>
+  <!-- plugins:css -->
+  <%- include ("../../partials/_plugins_css.ejs") %>
+    <!-- endinject -->
+    <!-- plugin css for this page -->
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="..//assets/css/shared/style.css">
+    <!-- endinject -->
+    <!-- Layout styles -->
+    <link rel="stylesheet" href="..//assets/css/shared/dashboard-style.css">
+    <!-- End Layout styles -->
+    <link rel="shortcut icon" href="/img/logo/blue_square_logo.svg" />
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="../script/get_session_info.js"></script>
 </head>
 
 <body>
-<div>
- <table width="100%" border="1">
-  <tbody>
-      <% rows.forEach(function(r) { %>
-        <tr>
-          	<td>TITLE</td>
-            <!-- do not change the ID ! -->
-          	<td><%= r.title %></td>
-        </tr>
-        <tr>
-          	<td>SESSION ID</td>
-          	<td id="vid"><%= r.session_id %></td>
-        </tr>
-        <tr>
-          	<td>ACCESS CODE</td>
-          	<td><%= r.access_code %></td>
-        </tr>
-        <tr>
-          	<td>START TIME</td>
-          	<td><%= r.start_time %></td>
-        </tr>
-        <tr>
-        	<td rowspan="2">UPLOAD VIDEO <br>(MP4 ONLY)<br><b>Please try to make the file smaller than 40MB!!! </b><br><b>Because we need to pay for the AWS S3!!</b></td>
-        	<td>
-				<input type="file" autofocus id='selected_file' accept="video/mp4"/>
-     		</td>
-      </tr>
-      <tr>
-			<td>
-                <!-- VERY IMPORTENT !!! -->
-                <!-- DO NOT CHANGE THE ID !!! -->
-				<button type="button" onclick="upload()">Upload</button>
-                <div id="uploading_sign" style="visibility: hidden;">
-                    <img src="../img/loading.gif" alt="Gif" width="5%">uploading... 
+  <div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+    <%- include ("../../partials/_navbar.ejs") %>
+      <!-- partial -->
+      <div class="container-fluid page-body-wrapper">
+        <!-- partial:partials/_sidebar.html -->
+        <%- include ("../../partials/_sidebar.ejs") %>
+          <!-- partial -->
+          <div class="main-panel">
+            <div class="content-wrapper">
+              <!-- Page Title Header Starts-->
+              <div class="row page-title-header">
+                <div class="col-12">
+                  <div class="page-header">
+                    <h4 class="page-title">Upload Recording</h4>
+                  </div>
                 </div>
-       		</td>
-      </tr>
-      <tr></tr>
-    <% }); %>
-  </tbody> 
-</table>
-</div>
+                <div class="col-md-12">
+                  <div class="page-header-toolbar">
+                    <div class="sort-wrapper">
+                      <button type="submit" class="btn btn-secondary toolbar-item"
+                        onclick="javascript:history.go(-1)">Back
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Page Title Header Ends-->
+              <div class="row">
+                <% rows.forEach(function(r) { %>
+                  <div class="col-md-12 grid-margin stretch-card">
+                    <div class="card">
+                      <div class="card-body">
+                        <h4 class="card-title">Session <%= r.session_id %>
+                        </h4>
+                        <form class="forms-sample" name="session" id="session" title="Creat New Session"
+                          action="/addSession" method="post">
+                          <div class="form-group">
+                            <label>Title</label>
+                            <input type="text" class="form-control" id="session_title" placeholder="Title" readonly
+                              name="new_session_title" value="<%= r.title %>">
+                          </div>
+                          <div class="form-group">
+                            <label>Session ID</label>
+                            <input type="text" class="form-control" id="vid" placeholder="Session ID" readonly
+                              name="new_session_title" value="<%= r.session_id %>">
+                          </div>
+                          <div class="form-group">
+                            <label>Start time</label>
+                            <input type="text" class="form-control" name="new_session_start_time" readonly
+                              id="new_session_start_time" value="<%= r.start_time %>">
+                          </div>
+                          <div class="form-group">
+                            <label>Access code</label>
+                            <input type="text" class="form-control" id="new_session_access_code"
+                              placeholder="Access code" name="new_session_access_code" readonly
+                              value="<%= r.access_code %>">
+                          </div>
+                          <div class="form-group">
+                            <label>Recording Video Upload</label>
+                            <!-- <input type="file" name="img[]" class="file-upload-default"> -->
+                            <div class="input-group col-xs-12">
+                              <!-- <input type="text" class="form-control file-upload-info" disabled placeholder="Upload Image"> -->
+                              <span class="input-group-append">
+                                <input type="file" autofocus id='selected_file' accept="video/mp4" />
+                                <button class="file-upload-browse btn btn-info" type="button"
+                                  onclick="new_upload()">Upload</button>
+                              </span>
+                            </div>
+                            <div id="uploading_sign" style="visibility: hidden;">
+                              <img src="../img/loading.gif" alt="Gif" width="5%">uploading...
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                  <% }); %>
+              </div>
+            </div>
+            <!-- content-wrapper ends -->
+            <!-- partial:partials/_footer.html -->
+            <%- include ("../../partials/_footer.ejs") %>
+              <!-- partial -->
+          </div>
+          <!-- main-panel ends -->
+      </div>
+      <!-- page-body-wrapper ends -->
+  </div>
+  <!-- container-scroller -->
+  <!-- plugins:js -->
+  <%- include ("../../partials/_plugins_js.ejs") %>
+    <!-- endinject -->
+    <!-- Plugin js for this page-->
+    <!-- End plugin js for this page-->
+    <!-- inject:js -->
+    <script src="..//assets/js/shared/off-canvas.js"></script>
+    <script src="..//assets/js/shared/misc.js"></script>
+    <!-- endinject -->
+    <!-- Custom js for this page-->
+    <script src="..//assets/js/shared/dashboard.js"></script>
+    <!-- End custom js for this page-->
+    <script src="../script/video_upload.js"></script>
 </body>
-<script src="../script/video_upload.js"></script>
-
 </html>

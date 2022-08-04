@@ -1,60 +1,36 @@
 <!DOCTYPE html>
-<html>
-<head>
-<style>
-    body{
-        margin: 0;
-	    background: linear-gradient(45deg, #49a09d, #5f2c82);
-	    font-family: sans-serif;
-	    font-weight: 100;
-    }
-    
-    h1{
-        display:absolute;
-        font-family: Georgia, 'Times New Roman', Times, serif;
-        margin: 10px 10px 10px 24px;
-    }
-    
-    #button{
-        top:50%;
-        background-color:#0a0a23;
-        color: #fff;
-        border:none;
-        border-radius:10px;
-        font-family: Georgia, 'Times New Roman', Times, serif;
-        width: 110px;
-        height: 30px;
-    }
-    
-    #button:hover{
-        top:50%;
-        background-color:#d4d4da;
-        color: rgb(12, 1, 1);
-        border:none;
-        border-radius:10px;
-        width: 110px;
-        height: 30px;
-    }
-    .buttons{
-        display:flex;
-    }
-</style>
-</head>
-<body>
-<h1>Your account has not been created</h1>
-<div class = "buttons">
-    <div >
-        <form action="/create_account" method = "get">
-            <input id = "button" type="submit" value = "Re-create">
-        </form>
-    </div>
-    
-    <div >
-        <form action="/login" method = "get">
-            <input id = "button" type="submit" value = "Back to Login">
-        </form>
-    </div>
-</div>
+<html lang="en">
 
+<head>
+    <!-- Design by foolishdeveloper.com -->
+    <title>LiveSpeaker</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+
+    <link href="/stylesheets/login.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body>
+    <div class="background">
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+    <form action="/auth" method="post">
+        <h3>LiveSpeaker</h3>
+        <h4><br></h4>
+        <h4>OOPS!</h4>
+        <h4><br></h4>
+        <h4>We cannot create your account.</h4>
+        <h4>Contact your admin for further help. </h4>
+
+
+        <h4><br></h4>
+
+        <a href="/">Return </a>
+    </form>
 </body>
+
 </html>

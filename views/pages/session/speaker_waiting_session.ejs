@@ -1,113 +1,150 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <title>SESSION</title>
-  <style>
-    html,
-    body {
-      height: 100%;
-    }
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Live Session -wait</title>
+	<!-- plugins:css -->
+	<%- include ("../../partials/_plugins_css.ejs") %>
+	<!-- endinject -->
+	<!-- plugin css for this page -->
+	<!-- End plugin css for this page -->
+	<!-- inject:css -->
+	<link rel="stylesheet" href="/assets/css/shared/style.css">
+	<!-- endinject -->
+	<!-- Layout styles -->
+	<link rel="stylesheet" href="/assets/css/shared/dashboard-style.css">
+	<!-- End Layout styles -->
+	<link rel="shortcut icon" href="/assets/images/favicon.png" />
 
-    body {
-      margin: 0;
-      background: linear-gradient(45deg, #49a09d, #5f2c82);
-      font-family: sans-serif;
-      font-weight: 100;
-    }
-
-    .container {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-
-    table {
-      width: 400px;
-      border-collapse: collapse;
-      overflow: hidden;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    #logout_button {
-      width: auto;
-      height: auto;
-      float: right;
-      margin-right: 1%;
-      margin-top: 1%;
-    }
-
-    #video_button {
-      width: auto;
-      height: auto;
-      float: right;
-      margin-right: 1%;
-      margin-top: 1%;
-    }
-  </style>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script src="../script/get_session_info.js"></script>
 </head>
-<header>
-  <form action="/logout" method="get">
-    <input type="submit" value="Logout" id="logout_button">
-  </form>
-  <form action="/home" method="get">
-    <input type="submit" value="Home page" id="video_button">
-  </form>
-  <!-- <form action="/new_session" method="get">
-    <input type="submit" value="New session" id="video_button">
-  </form> -->
-  <form action="/list" method="get">
-    <input type="submit" value="Session list" id="video_button">
-  </form>
-</header>
 
 <body>
-  <div>
-    <div>
-      <br>
-      <h3 style="text-align: center;">SESSION WAITING TO START</h3>
-    </div>
-    <table width="70%" border="2">
-      <tbody>
-        <% rows.forEach(function(r) { %>
-          <tr>
-            <td>TITLE</td>
-            <td>
-              <%= r.title %>
-            </td>
-          </tr>
-          <tr>
-            <td>SESSION ID</td>
-            <td>
-              <%= r.session_id %>
-            </td>
-          </tr>
-          <tr>
-            <td>ACCESS CODE</td>
-            <td>
-              <%= r.access_code %>
-            </td>
-          </tr>
-          <tr>
-            <td>START TIME</td>
-            <td>
-              <%= r.start_time %>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <form action='/go_to_session/<%= r.session_id %>' method='post'>
-                <input type="submit" name="go_to_session" id="go_to_session" value="START"></input>
-              </form>
-            </td>
-          </tr>
-          <% }); %>
-      </tbody>
-    </table>
-  </div>
+	<div class="container-scroller">
+		<!-- partial:partials/_navbar.html -->
+		<%- include ("../../partials/_navbar.ejs") %>
+		<!-- partial -->
+		<div class="container-fluid page-body-wrapper">
+			<!-- partial:partials/_sidebar.html -->
+			<%- include ("../../partials/_sidebar.ejs") %>
+			<!-- partial -->
+			<div class="main-panel">
+				<div class="content-wrapper">
+					<!-- Page Title Header Starts-->
+					<div class="row page-title-header">
+						<div class="col-12">
+							<div class="page-header">
+								<h4 class="page-title">Live Session</h4>
+							</div>
+						</div>
+						<div class="col-md-12">
+							<div class="page-header-toolbar">
+
+								<div class="sort-wrapper">
+									<button type="submit" class="btn btn-secondary toolbar-item"
+										onclick="javascript:history.go(-1)">Back
+									</button>
+								</div>
+
+
+
+							</div>
+						</div>
+					</div>
+					<!-- Page Title Header Ends-->
+
+
+					<div class="row">
+						<% rows.forEach(function(r) { %>
+
+
+
+							<div class="col-md-12 grid-margin stretch-card">
+								<div class="card">
+									<div class="card-body">
+										<h4 class="card-title">Session <%= r.session_id %>
+										</h4>
+										<p class="card-description"><i class="fa fa-info-circle"></i> Session not start yet, click "start" to begin the session.</p>
+										<form class="forms-sample" name="session" id="session" title="Creat New Session"
+											action="/addSession" method="post">
+											<div class="form-group">
+												<label>Title</label>
+												<input type="text" class="form-control" id="session_title"
+													placeholder="Title" readonly name="new_session_title"
+													value="<%= r.title %>">
+											</div>
+											<div class="form-group">
+												<label>Session ID</label>
+												<input type="text" class="form-control" id="vid"
+													placeholder="Session ID" readonly name="new_session_title"
+													value="<%= r.session_id %>">
+
+											</div>
+											<div class="form-group">
+												<label>Schedule start time</label>
+												<input type="text" class="form-control" name="new_session_start_time"
+													readonly id="new_session_start_time" value="<%= r.start_time %>">
+											</div>
+
+											<div class="form-group">
+												<label>Access code</label>
+												<input type="text" class="form-control" id="new_session_access_code"
+													placeholder="Access code" name="new_session_access_code" readonly
+													value="<%= r.access_code %>">
+
+											</div>
+
+
+
+
+
+
+										</form>
+										<form action='/go_to_session/<%= r.session_id %>' method='post'>
+										<button type="submit" class="btn btn-success col-sm-12" id="go_to_session"
+											name="go_to_session" id="submit_new_session_button">Start</button>
+										</form>
+
+
+									</div>
+								</div>
+							</div>
+							<% }); %>
+					</div>
+
+
+
+				</div>
+				<!-- content-wrapper ends -->
+				<!-- partial:partials/_footer.html -->
+				<%- include ("../../partials/_footer.ejs") %>
+				<!-- partial -->
+			</div>
+			<!-- main-panel ends -->
+		</div>
+		<!-- page-body-wrapper ends -->
+	</div>
+	<!-- container-scroller -->
+	<!-- plugins:js -->
+	<%- include ("../../partials/_plugins_js.ejs") %>
+	<!-- endinject -->
+	<!-- Plugin js for this page-->
+	<!-- End plugin js for this page-->
+	<!-- inject:js -->
+	<script src="/assets/js/shared/off-canvas.js"></script>
+	<script src="/assets/js/shared/misc.js"></script>
+	<!-- endinject -->
+	<!-- Custom js for this page-->
+	<script src="/assets/js/shared/dashboard.js"></script>
+	<!-- End custom js for this page-->
+
+
+	<script src="../script/video_upload.js"></script>
+
 </body>
 
 </html>

@@ -1,94 +1,305 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <title>SESSION</title>
-  <style>
-    html,
-    body {
-      height: 100%;
-    }
-
-    body {
-      margin: 0;
-      background: linear-gradient(45deg, #49a09d, #5f2c82);
-      font-family: sans-serif;
-      font-weight: 100;
-    }
-
-    .container {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-
-    table {
-      width: 400px;
-      border-collapse: collapse;
-      overflow: hidden;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    #logout_button {
-      width: auto;
-      height: auto;
-      float: right;
-      margin-right: 1%;
-      margin-top: 1%;
-    }
-
-    #video_button {
-      width: auto;
-      height: auto;
-      float: right;
-      margin-right: 1%;
-      margin-top: 1%;
-    }
-  </style>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Live Session -wait</title>
+	<!-- plugins:css -->
+	<%- include ("../../partials/_plugins_css.ejs") %>
+		<!-- endinject -->
+		<!-- plugin css for this page -->
+		<!-- End plugin css for this page -->
+		<!-- inject:css -->
+		<link rel="stylesheet" href="/assets/css/shared/style.css">
+		<!-- endinject -->
+		<!-- Layout styles -->
+		<link rel="stylesheet" href="/assets/css/shared/dashboard-style.css">
+		<!-- End Layout styles -->
+		<link rel="shortcut icon" href="/img/logo/blue_square_logo.svg" />
+		<link href="/stylesheets/stopwatch/stopwatch.css" rel="stylesheet" type="text/css">
+		<link href="/stylesheets/clock/clock.css" rel="stylesheet" type="text/css">
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<script src="../script/get_session_info.js"></script>
 </head>
 
-<header>
-  <form action="/logout" method="get">
-    <input type="submit" value="Logout" id="logout_button">
-  </form>
-</header>
-
 <body>
-  <div>
-    <div>
-      <br>
-      <h3 style="text-align: center;">LIVING SESSION</h3>
-    </div>
-    <table border="2">
-      <tbody>
-        <% rows.forEach(function(r) { %>
-          <tr>
-            <td>TITLE</td>
-            <td>
-              <%= r.title %>
-            </td>
-          </tr>
-          <tr>
-            <td>START TIME</td>
-            <td>
-              <%= r.start_time %>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <form action='/end_session/<%= r.session_id %>' method='post' name="end_session_form"
-                id="end_session_form">
-                <input type="submit" name="end_session" id="end_session" value="END SESSION"></input>
-              </form>
-            </td>
-          </tr>
-      </tbody>
-      <% });%>
-    </table>
-  </div>
+	<div class="container-scroller">
+		<!-- partial:partials/_navbar.html -->
+		<%- include ("../../partials/_navbar.ejs") %>
+			<!-- partial -->
+			<div class="container-fluid page-body-wrapper">
+				<!-- partial:partials/_sidebar.html -->
+				<%- include ("../../partials/_sidebar.ejs") %>
+					<!-- partial -->
+					<div class="main-panel">
+						<div class="content-wrapper">
+							<!-- Page Title Header Starts-->
+							<div class="row page-title-header">
+								<div class="col-12">
+									<div class="page-header">
+										<h4 class="page-title">Live Session</h4>
+									</div>
+								</div>
+								<div class="col-md-12">
+									<div class="page-header-toolbar">
+
+										<div class="sort-wrapper">
+											<button type="submit" class="btn btn-secondary toolbar-item"
+												onclick="javascript:history.go(-1)" disabled>Back
+											</button>
+
+											<div class="dropdown ml-3 toolbar-item">
+												<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownexport"
+												  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Tools</button>
+												<div class="dropdown-menu" aria-labelledby="dropdownexport">
+												  <a class="dropdown-item" href="/web_tools/calculator.html" target="_blank">Graphing
+													Calculator</a>
+												  <!-- <a class="dropdown-item" href="#">Export as DOCX</a>
+											<a class="dropdown-item" href="#">Export as CDR</a> -->
+												</div>
+											  </div>
+											
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- Page Title Header Ends-->
+
+
+							<div class="row">
+								<% rows.forEach(function(r) { %>
+
+									<!--should change to 8-->
+									<div class="col-md-12 grid-margin stretch-card">
+										<div class="card">
+											<div class="card-body">
+												<h4 class="card-title">Session <%= r.session_id %>
+												</h4>
+												<p class="card-description"><em class="fa fa-info-circle"></em> Session
+													started,
+													click "end" to stop the session.</p>
+												<form class="forms-sample" name="session" id="session"
+													title="Creat New Session" action="/addSession" method="post">
+													<div class="form-group">
+														<label>Title</label>
+														<input type="text" class="form-control" id="session_title"
+															placeholder="Title" readonly name="new_session_title"
+															value="<%= r.title %>">
+													</div>
+													<div class="form-group">
+														<label>Session ID</label>
+														<input type="text" class="form-control" id="vid"
+															placeholder="Session ID" readonly name="new_session_title"
+															value="<%= r.session_id %>">
+
+													</div>
+													<div class="form-group">
+														<label>Schedule start time</label>
+														<input type="text" class="form-control"
+															name="new_session_start_time" readonly
+															id="new_session_start_time" value="<%= r.start_time %>">
+													</div>
+
+													<div class="form-group">
+														<label>Access code</label>
+														<input type="text" class="form-control"
+															id="new_session_access_code" placeholder="Access code"
+															name="new_session_access_code" readonly
+															value="<%= r.access_code %>">
+													</div>
+												</form>
+												<form action='/end_session/<%= r.session_id %>' method='post'
+													name="end_session_form" id="end_session_form">
+													<button type="submit" class="btn btn-danger col-sm-12"
+														id="go_to_session" name="go_to_session"
+														id="submit_new_session_button">End</button>
+												</form>
+											</div>
+										</div>
+									</div>
+									<% }); %>
+										<div class="col-md-6 grid-margin">
+											<div class="card" style="background: #7D2Ae8">
+												<div class="card-body pb-0 ">
+													<h4 class="card-title" style="color:white">Stopwatch</h4>
+													<div id="stopwatch-body">
+														<div class="wrapper">
+															<div class="time">
+																<span class="hour">00</span>
+																<span class="colon">:</span>
+																<span class="minute">00</span>
+																<span class="colon">:</span>
+																<span class="second">00</span>
+																<span class="colon ms-colon">:</span>
+																<span class="millisecond">00</span>
+															</div>
+															<div class="stopwatch_buttons">
+																<button class="start"
+																	style="display:none;">Start</button>
+																<button class="stop" style="display:none;">Stop</button>
+																<button class="reset"
+																	style="display:none;">Reset</button>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div><br><br></div>
+											</div>
+										</div>
+
+										<div class="col-md-4 grid-margin stretch-card average-price-card">
+											<div class="card text-white">
+												<div class="card-body">
+													<h4 class="card-title text-white">Time</h4>
+
+													<div onLoad="initClock()" class="d-flex justify-content-between">
+
+														<div id="timedate" class="font-weight-semibold mb-0">
+															<div class="row text-white   color:white;
+											font:43px/150%;">
+																<a id="mon" class="clock_element" style="color:white;
+												font:43px/200%;">July</a>&nbsp;<a id="d" class="clock_element" style="color:white;
+												font:43px/200%;">30</a>&nbsp;<a id="y" class="clock_element" style="color:white;
+												font:43px/200%;">2022</a>
+															</div>
+
+															<div class="row text-white ">
+																<a id="h" class="clock_element" style="color:white;
+												font:43px/200%;">16</a>:<a id="m" class="clock_element" style="color:white;
+												font:43px/200%;">31</a>:<a id="s" class="clock_element" style="color:white;
+												font:43px/200%;">32</a><!-- : --> <a id="mi" class="clock_element" style="display:none">159</a>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+							</div>
+						</div>
+						<!-- content-wrapper ends -->
+						<!-- partial:partials/_footer.html -->
+						<%- include ("../../partials/_footer.ejs") %>
+							<!-- partial -->
+					</div>
+					<!-- main-panel ends -->
+			</div>
+			<!-- page-body-wrapper ends -->
+	</div>
+	<!-- container-scroller -->
+	<!-- plugins:js -->
+	<%- include ("../../partials/_plugins_js.ejs") %>
+		<!-- endinject -->
+		<!-- Plugin js for this page-->
+		<!-- End plugin js for this page-->
+		<!-- inject:js -->
+		<script src="/assets/js/shared/off-canvas.js"></script>
+		<script src="/assets/js/shared/misc.js"></script>
+		<!-- endinject -->
+		<!-- Custom js for this page-->
+		<script src="/assets/js/shared/dashboard.js"></script>
+		<!-- End custom js for this page-->
+
+		<script src="../script/video_upload.js"></script>
+		<script src="../script/stopwatch.js"></script>
+		<script src="../script/clock.js"></script>
+
+		<script>
+			let hr = min = sec = ms = "0" + 0,
+				startTimer;
+
+			const startBtn = document.querySelector(".start"),
+				stopBtn = document.querySelector(".stop"),
+				resetBtn = document.querySelector(".reset");
+
+			startBtn.addEventListener("click", start);
+			stopBtn.addEventListener("click", stop);
+			resetBtn.addEventListener("click", reset);
+
+			function start() {
+				startBtn.classList.add("active");
+				stopBtn.classList.remove("stopActive");
+
+				startTimer = setInterval(() => {
+					ms++
+					ms = ms < 10 ? "0" + ms : ms;
+
+					if (ms == 100) {
+						sec++;
+						sec = sec < 10 ? "0" + sec : sec;
+						ms = "0" + 0;
+					}
+					if (sec == 60) {
+						min++;
+						min = min < 10 ? "0" + min : min;
+						sec = "0" + 0;
+					}
+					if (min == 60) {
+						hr++;
+						hr = hr < 10 ? "0" + hr : hr;
+						min = "0" + 0;
+					}
+					putValue();
+				}, 10); //1000ms = 1s
+
+			}
+
+			function stop() {
+				startBtn.classList.remove("active");
+				stopBtn.classList.add("stopActive");
+				clearInterval(startTimer);
+			}
+			function reset() {
+				startBtn.classList.remove("active");
+				stopBtn.classList.remove("stopActive");
+				clearInterval(startTimer);
+				hr = min = sec = ms = "0" + 0;
+				putValue();
+			}
+
+			function putValue() {
+				document.querySelector(".millisecond").innerText = ms;
+				document.querySelector(".second").innerText = sec;
+				document.querySelector(".minute").innerText = min;
+				document.querySelector(".hour").innerText = hr;
+			}
+			start()
+		</script>
+
+		<script>
+
+			// START CLOCK SCRIPT
+
+			Number.prototype.pad = function (n) {
+				for (var r = this.toString(); r.length < n; r = 0 + r);
+				return r;
+			};
+
+			function updateClock() {
+				var now = new Date();
+				var milli = now.getMilliseconds(),
+					sec = now.getSeconds(),
+					min = now.getMinutes(),
+					hou = now.getHours(),
+					mo = now.getMonth(),
+					dy = now.getDate(),
+					yr = now.getFullYear();
+				var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+				var tags = ["mon", "d", "y", "h", "m", "s", "mi"],
+					corr = [months[mo], dy, yr, hou.pad(2), min.pad(2), sec.pad(2), milli];
+				for (var i = 0; i < tags.length; i++)
+					document.getElementById(tags[i]).firstChild.nodeValue = corr[i];
+			}
+
+			function initClock() {
+				updateClock();
+				window.setInterval("updateClock()", 1);
+			}
+			initClock()
+// END CLOCK SCRIPT
+
+		</script>
 </body>
 
 </html>

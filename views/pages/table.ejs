@@ -1,70 +1,139 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <title>usr Information table</title>
-  <link rel="stylesheet" href="./stylesheets/table.css">
-  <link href="./stylesheets/button.css" rel="stylesheet" type="text/css">
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>User</title>
+	<!-- plugins:css -->
+	<%- include ("../partials/_plugins_css.ejs") %>
+		<!-- endinject -->
+		<!-- plugin css for this page -->
+		<!-- End plugin css for this page -->
+		<!-- inject:css -->
+		<link rel="stylesheet" href="/assets/css/shared/style.css">
+		<!-- endinject -->
+		<!-- Layout styles -->
+		<link rel="stylesheet" href="/assets/css/shared/dashboard-style.css">
+		<!-- End Layout styles -->
+		<link rel="shortcut icon" href="/assets/images/favicon.png" />
+
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<script src="/script/clientLib.js"></script>
 </head>
 
-<body class="main_body">
-  <header>
-    <form action="/logout" method="get">
-      <input type="submit" value="Logout" id="logout_button">
-    </form>
-  </header>
-
-
-  <div class="container">
-
-    <h1>User and Admin Login Information</h1>
-    <table>
-      <thead>
-        <tr>
-          <th>User Uid</th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>User_Type</th>
-        </tr>
-        <thead>
-          <% rows.forEach(function(r) { %>
-            <tr>
-              <td class="col col-1" data-label="UID">
-                <%= r.uid %>
-              </td>
-              <td class="col col-2" data-label="Name">
-                <%= r.name %>
-              </td>
-              <td class="col col-3" data-label="Email">
-                <%= r.email %>
-              </td>
-              <td class="col col-4" data-label="User_Type">
-                <%= r.type %>
-              </td>
-              <td>
-                <form action="/delete/<%= r.uid %>" method="post">
-                  <input id="delete_button" type="submit" value="Delete">
-                </form>
-              </td>
-            </tr>
-            <% }); %>
-    </table>
-
-    <div class="buttons">
-      <div>
-        <form action="/add_admin" method="get">
-          <input id="button" type="submit" value="Add New Admin">
-        </form>
-      </div>
-
-      <div>
-        <form action="/view_comments" method="get">
-          <input id="button" type="submit" value="View Comments">
-        </form>
-      </div>
-    </div>
-
+<body>
+	<div class="container-scroller">
+		<!-- partial:partials/_navbar.html -->
+		<%- include ("../partials/_navbar.ejs") %>
+			<!-- partial -->
+			<div class="container-fluid page-body-wrapper">
+				<!-- partial:partials/_sidebar.html -->
+				<%- include ("../partials/_sidebar.ejs") %>
+					<!-- partial -->
+					<div class="main-panel">
+						<div class="content-wrapper">
+							<!-- Page Title Header Starts-->
+							<div class="row page-title-header">
+								<div class="col-12">
+									<div class="page-header">
+										<h4 class="page-title">Users</h4>
+										<div class="quick-link-wrapper w-100 d-md-flex flex-md-wrap">
+										</div>
+									</div>
+								</div>
+								<div class="col-md-12">
+									<div class="page-header-toolbar">
+										<form action="/home" method="get">
+											<button type="submit" class="btn btn-secondary toolbar-item">Back
+											</button>
+										</form>
+										<div>&nbsp;&nbsp;&nbsp;</div>
+										<div class="sort-wrapper">
+											<form action="/admin_add_user" method="get">
+												<button type="submit" class="btn btn-primary toolbar-item">Create New User
+												</button>
+											</form>
+											<div>&nbsp;&nbsp;&nbsp;</div>
+											<form action="/add_admin" method="get">
+												<button type="submit" class="btn btn-secondary toolbar-item">Create New 
+													Admin
+												</button>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- Page Title Header Ends-->
+							<div class="row">
+								<div class="col-lg-12 grid-margin stretch-card">
+									<div class="card">
+										<div class="card-body">
+											<table class="table table-hover">
+												<thead>
+													<tr>
+														<th>UID</th>
+														<th>User Name</th>
+														<th>Email</th>
+														<th>Member of</th>
+														<th>&nbsp;</th>
+													</tr>
+												</thead>
+												<tbody>
+													<% rows.forEach(function(r) { %>
+														<tr>
+															<td data-label="UID">
+																<%= r.uid %>
+															</td>
+															<td data-label="Name">
+																<%= r.name %>
+															</td>
+															<td data-label="Email">
+																<%= r.email %>
+															</td>
+															<td data-label="User_Type">
+																<%= r.type %>
+															</td>
+															<td>
+																<form action="/delete/<%= r.uid %>" method="post">
+																	<button id="delete_button" type="submit"
+																		class="btn btn-danger btn-fw">Delete</button>
+																</form>
+															</td>
+														</tr>
+														<% }); %>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+			</div>
+			<!-- content-wrapper ends -->
+			<!-- partial:partials/_footer.html -->
+			<%- include ("../partials/_footer.ejs") %>
+				<!-- partial -->
+	</div>
+	<!-- main-panel ends -->
+	</div>
+	<!-- page-body-wrapper ends -->
+	</div>
+	<!-- container-scroller -->
+	<!-- plugins:js -->
+	<%- include ("../partials/_plugins_js.ejs") %>
+		<!-- endinject -->
+		<!-- Plugin js for this page-->
+		<!-- End plugin js for this page-->
+		<!-- inject:js -->
+		<script src="/assets/js/shared/off-canvas.js"></script>
+		<script src="/assets/js/shared/misc.js"></script>
+		<!-- endinject -->
+		<!-- Custom js for this page-->
+		<script src="/assets/js/shared/dashboard.js"></script>
+		<!-- End custom js for this page-->
 </body>
 
 </html>

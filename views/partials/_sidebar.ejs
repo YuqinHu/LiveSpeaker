@@ -1,0 +1,79 @@
+<!-- partial:partials/_sidebar.html -->
+<nav class="sidebar sidebar-offcanvas" id="sidebar">
+	<ul class="nav">
+		<li class="nav-item nav-category">Main Menu</li>
+		<li class="nav-item">
+			<a class="nav-link" href="/home">
+				<i class="menu-icon typcn typcn-document-text"></i>
+				<span class="menu-title">Dashboard</span>
+			</a>
+		</li>
+		<li class="nav-item"><a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false"
+				aria-controls="ui-basic"> <em class="menu-icon typcn typcn-coffee"></em> <span
+					class="menu-title">Sessions</span> <em class="menu-arrow"></em> </a>
+			<div class="collapse" id="ui-basic">
+				<ul class="nav flex-column sub-menu">
+					<li class="nav-item">
+						<a class="nav-link" href="/new_session">Creat Session</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/join_live_session">Join Session</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/review_session">Review Session</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/list">Session List</a>
+					</li>
+				</ul>
+			</div>
+		</li>
+		<li class="nav-item admin_only_nav" id="sidebar_nav_management"  style="display:none"><a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic"> <em class="menu-icon typcn typcn-coffee"></em> <span class="menu-title">Management</span> <em class="menu-arrow"></em> </a>
+			<div class="collapse" id="ui-basic">
+			  <ul class="nav flex-column sub-menu">
+				<li class="nav-item">
+				  <a class="nav-link" href="/table">User Management</a>
+				</li>
+				<li class="nav-item">
+				  <a class="nav-link" href="/view_comments">Notes Management</a>
+				</li>
+			  </ul>
+			</div>
+		  </li>
+		<li class="nav-item">
+			<a class="nav-link" href="/friendlist">
+				<i class="menu-icon typcn typcn-shopping-bag"></i>
+				<span class="menu-title">Contacts</span>
+			</a>
+		</li>
+		<!-- <li class="nav-item admin_only_nav" id="sidebar_nav_user_management" style="display:none"> -->
+			<!-- admin -->
+			<!-- <a class="nav-link" href="/table">
+				<i class="menu-icon typcn typcn-shopping-bag"></i>
+				<span class="menu-title">User Management</span>
+			</a>
+		</li>
+		<li class="nav-item admin_only_nav" style="display:none" id="sidebar_nav_session_management"> -->
+			<!-- admin -->
+			<!-- <a class="nav-link" href="/list">
+				<i class="menu-icon typcn typcn-th-large-outline"></i>
+				<span class="menu-title">Sessions Management</span>
+			</a>
+		</li>
+		<li class="nav-item admin_only_nav" style="display:none" id="sidebar_nav_notes_management"> -->
+			<!-- admin -->
+			<!-- <a class="nav-link" href="/view_comments">
+				<i class="menu-icon typcn typcn-th-large-outline"></i>
+				<span class="menu-title">Notes Management</span>
+			</a> -->
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" href="/logout">
+				<i class="menu-icon typcn typcn-th-large-outline"></i>
+				<span class="menu-title">Sign Out&nbsp;&nbsp;<i class="fa fa-sign-out"></i></span>
+			</a>
+		</li>
+
+
+	</ul>
+</nav>

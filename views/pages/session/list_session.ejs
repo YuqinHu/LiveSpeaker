@@ -1,119 +1,157 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
+  <!-- Required meta tags -->
   <meta charset="utf-8">
-  <title>SESSION</title>
-  <link rel="stylesheet" href="./stylesheets/sessiontable.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Sessions</title>
+  <!-- plugins:css -->
+  <%- include ("../../partials/_plugins_css.ejs") %>
+    <!-- endinject -->
+    <!-- plugin css for this page -->
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="/assets/css/shared/style.css">
+    <!-- endinject -->
+    <!-- Layout styles -->
+    <link rel="stylesheet" href="/assets/css/shared/dashboard-style.css">
+    <!-- End Layout styles -->
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 
 <body>
-  <header>
-    <form action="/logout" method="get">
-      <input type="submit" value="Logout" id="logout_button">
-    </form>
-    <form action="/home" method="get">
-      <input type="submit" value="Home page" id="video_button">
-    </form>
-    <form action="/new_session" method="get">
-      <input type="submit" value="New session" id="video_button">
-    </form>
-  </header>
-
-  <div>
-    <div>
-      <br>
-      <h3 style="text-align: center;">SESSION LIST</h3>
-    </div>
-    <table>
-      <tbody>
-        <% rows.forEach(function(r) { %>
-          <tr>
-            <td>
-              <div>
-                <table>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <table border="2">
-                          <tbody>
-                            <tr>
-                              <td>TITLE</td>
-                              <td>
-                                <%= r.title %>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>SESSION ID</td>
-                              <td>
-                                <%= r.session_id %>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>ACCESS CODE</td>
-                              <td>
-                                <%= r.access_code %>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>START TIME</td>
-                              <td>
-                                <%= r.start_time %>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>SESSION TYPE</td>
-                              <td>
-                                <%= r.session_type %>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>VIDEO STATUS</td>
-                              <td>
-                                <%= r.video_state %>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </td>
-                      <td>
-                        <table>
-                          <tbody>
-                            <tr>
-                              <td>
-                                <form action='/go_to_session_page/<%= r.session_id %>' method='get'>
-                                  <input type="submit" value="GO TO SESSION"></input>
-                                </form>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <form action="/cancel_session/<%= r.session_id %>" methed="get">
-                                  <input type="submit" name="cancel_session" id="cancel_session"
-                                    value="DELETE SESSION"></input>
-                                </form>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+  <div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+    <%- include ("../../partials/_navbar.ejs") %>
+      <!-- partial -->
+      <div class="container-fluid page-body-wrapper">
+        <!-- partial:partials/_sidebar.html -->
+        <%- include ("../../partials/_sidebar.ejs") %>
+          <!-- partial -->
+          <div class="main-panel">
+            <div class="content-wrapper">
+              <!-- Page Title Header Starts-->
+              <div class="row page-title-header">
+                <div class="col-12">
+                  <div class="page-header">
+                    <h4 class="page-title">Sessions</h4>
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="page-header-toolbar">
+                    <div class="sort-wrapper">
+                      <form action="/home" method="get">
+                        <button type="submit" class="btn btn-secondary toolbar-item">Back
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <br>
-            </td>
-          </tr>
-      </tbody>
-      <% }); %>
-    </table>
+              <!-- Page Title Header Ends-->
+              <div class="row">
+                <% rows.forEach(function(r) { %>
+
+                  <div class="col-12 stretch-card">
+                    <div class="card">
+                      <div class="card-body">
+                        <h4 class="card-title">Session <%= r.session_id %>
+                        </h4>
+                        <form class="forms-sample">
+                          <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Title</label>
+                            <div class="col-sm-9">
+                              <input type="text" class="form-control" id="session_title" placeholder="Session Title"
+                                value="<%= r.title %>" readonly>
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Session ID</label>
+                            <div class="col-sm-9">
+                              <input type="text" class="form-control" id="session_id" placeholder="Session ID"
+                                value="<%= r.session_id %>" readonly>
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Access code</label>
+                            <div class="col-sm-9">
+                              <input type="text" class="form-control" id="access_code" placeholder="Session ID"
+                                value="<%= r.access_code %>" readonly>
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Start time</label>
+                            <div class="col-sm-9">
+                              <input type="text" class="form-control" id="start_time" placeholder="Start time"
+                                value="<%= r.start_time %>" readonly>
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Session type</label>
+                            <div class="col-sm-9">
+                              <input type="text" class="form-control" id="session_type" placeholder="Session type"
+                                value="<%= r.session_type %>" readonly>
+                            </div>
+                          </div>
+
+                          <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Session Video</label>
+                            <div class="col-sm-9">
+                              <input type="text" class="form-control" id="session_video" placeholder="No Session Video"
+                                value="<%= r.video_url %>" readonly>
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Attachment file</label>
+                            <div class="col-sm-9">
+                              <input type="text" class="form-control" id="session_attachment"
+                                placeholder="No attachment file" value="<%= r.file_state %>" readonly>
+                            </div>
+                          </div>
+                        </form>
+                        <div class="form-group row">
+                          <div>&nbsp;&nbsp;&nbsp;</div>
+                          <form class="forms-sample" action='/go_to_session_page/<%= r.session_id %>' method='get'>
+                            <button type="submit" class="btn btn-success btn-fw">Go</button>
+                          </form>
+                          <div>&nbsp; &nbsp;</div>
+
+                          <form class="forms-sample" action="/cancel_session/<%= r.session_id %>" methed="get">
+                            <button class="btn btn-danger mr-2 ">Delete</button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <% }); %>
+              </div>
+            </div>
+          </div>
+      </div>
+      <!-- content-wrapper ends -->
+      <!-- partial:partials/_footer.html -->
+      <%- include ("../../partials/_footer.ejs") %>
+        <!-- partial -->
   </div>
-
-
-
-
-
-
+  <!-- main-panel ends -->
+  </div>
+  <!-- page-body-wrapper ends -->
+  </div>
+  <!-- container-scroller -->
+  <!-- plugins:js -->
+  <%- include ("../../partials/_plugins_js.ejs") %>
+    <!-- endinject -->
+    <!-- Plugin js for this page-->
+    <!-- End plugin js for this page-->
+    <!-- inject:js -->
+    <script src="/assets/js/shared/off-canvas.js"></script>
+    <script src="/assets/js/shared/misc.js"></script>
+    <!-- endinject -->
+    <!-- Custom js for this page-->
+    <script src="/assets/js/shared/dashboard.js"></script>
+    <!-- End custom js for this page-->
 </body>
 
 </html>

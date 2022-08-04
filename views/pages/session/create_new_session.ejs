@@ -1,104 +1,169 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <title>Creat new session</title>
-  <link rel="stylesheet" href="./stylesheets/table.css">
-  <link href="./stylesheets/button.css" rel="stylesheet" type="text/css">
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Creat new session</title>
+	<!-- plugins:css -->
+	<%- include ("../../partials/_plugins_css.ejs") %>
+	<!-- endinject -->
+	<!-- plugin css for this page -->
+	<!-- End plugin css for this page -->
+	<!-- inject:css -->
+	<link rel="stylesheet" href="/assets/css/shared/style.css">
+	<!-- endinject -->
+	<!-- Layout styles -->
+	<link rel="stylesheet" href="/assets/css/demo_1/style.css">
+	<!-- End Layout styles -->
+	<link rel="shortcut icon" href="/img/logo/blue_square_logo.svg" />
+	<link rel="stylesheet" href="/assets/css/shared/dashboard-style.css">
+	<!-- End Layout styles -->
 
+
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 
 <body>
-  <header>
-    <form action="/logout" method="get">
-      <input type="submit" value="Logout" id="logout_button">
-    </form>
-    <form action="/home" method="get">
-      <input type="submit" value="Home page" id="video_button">
-    </form>
-    <form action="/list" method="get">
-      <input type="submit" value="Session list" id="video_button">
-    </form>
-  </header>
+	<div class="container-scroller">
+		<!-- partial:partials/_navbar.html -->
+		<%- include ("../../partials/_navbar.ejs") %>
+			<!-- partial -->
+			<div class="container-fluid page-body-wrapper">
+				<!-- partial:partials/_sidebar.html -->
+				<%- include ("../../partials/_sidebar.ejs") %>
+					<!-- partial -->
+					<div class="main-panel">
+						<div class="content-wrapper">
+							<!-- Page Title Header Starts-->
+							<div class="row page-title-header">
+								<div class="col-12">
+									<div class="page-header">
+										<h4 class="page-title">Create new session</h4>
+									</div>
+								</div>
+								<div class="col-md-12">
+									<div class="page-header-toolbar">
+										<div class="sort-wrapper">
+											<form action="/home" method="get">
+												<button type="submit" class="btn btn-secondary toolbar-item">Back
+												</button>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- Page Title Header Ends-->
+							<div class="row">
+								<div class="col-md-12 grid-margin stretch-card">
+									<div class="card">
+										<div class="card-body">
+											<h4 class="card-title">Session detail</h4>
+											<form class="forms-sample" name="creat_new_session" id="creat_new_session"
+												title="Creat New Session" action="/addSession" method="post">
+												<div class="form-group">
+													<label>Title</label>
+													<input type="text" class="form-control" id="new_session_title"
+														placeholder="Title" name="new_session_title" required>
+												</div>
+												<div class="form-group">
+													<label>Start time</label>
+													<input type="datetime-local" class="form-control"
+														name="new_session_start_time" id="new_session_start_time"
+														required>
+												</div>
 
-  <div>
-    <div>
-      <br>
-      <h3 style="text-align: center; ">CREATE NEW SESSION</h3>
-    </div>
-    <form name="creat_new_session" id="creat_new_session" title="Creat New Session" action="/addSession" method="post">
-      <table class="center" width="70%" border="1">
-        <tbody>
-          <tr>
-            <td>TITLE:</td>
-            <td><input name="new_session_title" required type="text" id="new_session_title">&nbsp;</td>
-          </tr>
-          <tr>
-            <td>START TIME</td>
-            <td><input type="datetime-local" required min="" name="new_session_start_time" id="new_session_start_time">
-            </td>
-          </tr>
-          <!-- check time function -->
-          <!-- onchange ="check_time('new_session_start_time')" -->
-          <tr>
-            <td>ACCESS CODE</td>
-            <td><input type="text" autocomplete="on" required id="new_session_access_code"
-                name="new_session_access_code" onchange="check_password('new_session_access_code')"></td>
-          </tr>
-          <!-- <tr>
-      <td>UPLOAD PPT/PDF</td>
-      <td><label for="fileField">File:</label>
-        <input type="file" name="fileField" id="fileField">[备注：尚未配置]</td>
-    </tr> -->
-          <tr>
-            <td><input type="submit">&nbsp;</td>
-            <td>&nbsp;</td>
-          </tr>
-        </tbody>
-      </table>
-    </form>
+												<div class="form-group">
+													<label>Access code</label>
+													<input type="text" class="form-control" id="new_session_access_code"
+														placeholder="Access code" name="new_session_access_code"
+														required onchange="check_password('new_session_access_code')">
+												</div>
+												<div class="form-group">
+													<label>File upload</label>
+													<!-- <input type="file" name="img[]" class="file-upload-default"> -->
+													<div class="input-group col-xs-12">
+														<!-- <input type="text" class="form-control file-upload-info" disabled placeholder="Upload Image"> -->
+														<span class="input-group-append">
+															<input type="file" autofocus id='selected_file'
+																onclick="set_not_finish_uploading()" />
+															<button class="file-upload-browse btn btn-info"
+																type="button" onclick="clieck_upload()">Upload</button>
+														</span>
+													</div>
+													<div id="uploading_sign" style="visibility: hidden;">
+														<img src="../img/loading.gif" alt="Gif" width="5%">uploading...
+													</div>
+												</div>
+												<div style="display:none" id="upload_alert">
+													<p class="card-description" style="color: #FF6258">You need to click
+														the upload button before submit.</p>
+												</div>
+												<button type="submit" class="btn btn-success mr-2"
+													id="submit_new_session_button">Submit</button>
 
-  </div>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- content-wrapper ends -->
+						<!-- partial:partials/_footer.html -->
+						<%- include ("../../partials/_footer.ejs") %>
+							<!-- partial -->
+					</div>
+					<!-- main-panel ends -->
+			</div>
+			<!-- page-body-wrapper ends -->
+	</div>
+	<!-- container-scroller -->
+	<!-- plugins:js -->
+	<%- include ("../../partials/_plugins_js.ejs") %>
+		<!-- endinject -->
+		<!-- Plugin js for this page-->
+		<!-- End plugin js for this page-->
+		<!-- inject:js -->
+		<script src="/assets/js/shared/off-canvas.js"></script>
+		<script src="/assets/js/shared/misc.js"></script>
+		<!-- endinject -->
+		<!-- Custom js for this page-->
+		<script src="../script/attachment_upload.js"></script>
+		<script src="/assets/js/demo_1/dashboard.js"></script>
+		<!-- End custom js for this page-->
 
+
+		<script>
+			function check_password(input_value) {
+				var val = document.getElementById(input_value).value;
+				if (val.length > 10) {
+					alert('Please enter password less than 10 characters');
+					var temp = document.getElementById(input_value);
+					temp.value = '';
+				}
+				if (val.length < 6) {
+					alert('Please enter password greater than 6 characters');
+					var temp = document.getElementById(input_value);
+					temp.value = '';
+				}
+			}
+
+
+			function set_upload_finished() {
+				document.getElementById("submit_new_session_button").disabled = false;
+				document.getElementById("upload_alert").style.display = "none";
+			}
+
+			function set_not_finish_uploading() {
+				document.getElementById("submit_new_session_button").disabled = true;
+				document.getElementById("upload_alert").style.display = "";
+			}
+
+			async function clieck_upload() {
+				await upload();
+				set_upload_finished();
+			}
+		</script>
 </body>
-
-<script>
-
-
-  // check time 
-  // function check_time(input){ 
-  //   var date = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
-  //   var isoDate = (new Date(Date.now() - date)).toISOString().slice(0, -1);
-  //   isoDate = isoDate.substr(0,16);
-  //   console.log(isoDate);
-  //   var x = document.getElementById(input).value;
-  //   console.log(x);
-  //   if(x < isoDate){
-  //     alert('You can not create session earlier than now!');
-  //     var temp = document.getElementById(input);
-  //     temp.value = '';
-  //   }
-  // }
-
-
-  function check_password(input_value) {
-    var val = document.getElementById(input_value).value;
-    if (val.length > 10) {
-      alert('Please enter password less than 10 characters');
-      var temp = document.getElementById(input_value);
-      temp.value = '';
-    }
-    if (val.length < 6) {
-      alert('Please enter password greater than 6 characters');
-      var temp = document.getElementById(input_value);
-      temp.value = '';
-    }
-  }
-
-
-
-
-</script>
-
 </html>

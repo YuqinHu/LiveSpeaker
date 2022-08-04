@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>User</title>
+	<!-- plugins:css -->
+	<%- include ("../partials/_plugins_css.ejs") %>
+		<!-- endinject -->
+		<!-- plugin css for this page -->
+		<!-- End plugin css for this page -->
+		<!-- inject:css -->
+		<link rel="stylesheet" href="/assets/css/shared/style.css">
+		<!-- endinject -->
+		<!-- Layout styles -->
+		<link rel="stylesheet" href="/assets/css/shared/dashboard-style.css">
+		<!-- End Layout styles -->
+		<link rel="shortcut icon" href="/assets/images/favicon.png" />
+
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<script src="/script/clientLib.js"></script>
+</head>
+
+<body>
+	<div class="container-scroller">
+		<!-- partial:partials/_navbar.html -->
+		<%- include ("../partials/_navbar.ejs") %>
+			<!-- partial -->
+			<div class="container-fluid page-body-wrapper">
+				<!-- partial:partials/_sidebar.html -->
+				<%- include ("../partials/_sidebar.ejs") %>
+					<!-- partial -->
+					<div class="main-panel">
+						<div class="content-wrapper">
+							<!-- Page Title Header Starts-->
+							<div class="row page-title-header">
+								<div class="col-12">
+									<div class="page-header">
+										<h4 class="page-title">Users</h4>
+										<div class="quick-link-wrapper w-100 d-md-flex flex-md-wrap">
+
+										</div>
+									</div>
+								</div>
+								<div class="col-md-12">
+									<div class="page-header-toolbar">
+
+										<div class="sort-wrapper">
+											<form action="/table" method="get">
+												<button type="submit" class="btn btn-secondary toolbar-item">Back
+												</button>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- Page Title Header Ends-->
+							<div class="row">
+								<div class="col-lg-12 grid-margin stretch-card">
+									<div class="card">
+										<div class="card-body">
+											<h4 class="card-title">New User</h4>
+											<form class="forms-sample" action="/create_user_account/" method="post">
+												<div class="form-group">
+													<label>Username</label>
+													<input type="text" class="form-control" id="name"
+														placeholder="Username" name="name" onchange="check_name('name')"
+														required>
+												</div>
+												<div class="form-group">
+													<label>Email address</label>
+													<input type="email" class="form-control" id="email"
+														placeholder="Email"
+														pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2, 4}$" name="email"
+														required>
+												</div>
+												<div class="form-group">
+													<label>Password</label>
+													<input type="password" class="form-control" id="password"
+														placeholder="Password" name="password"
+														onchange="check_password('password')" required>
+												</div>
+
+												<div class="form-group">
+													<label>Confirm Password</label>
+													<input type="password" class="form-control" id="cpassword"
+														placeholder="Re enter your password" name="cpassword"
+														onchange="check_cpassword('password', 'cpassword')" required>
+												</div>
+												<button id="submit_button" type="submit"
+													class="btn btn-success mr-2">Create</button>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+			</div>
+			<!-- content-wrapper ends -->
+			<!-- partial:partials/_footer.html -->
+			<%- include ("../partials/_footer.ejs") %>
+				<!-- partial -->
+	</div>
+	<!-- main-panel ends -->
+	</div>
+	<!-- page-body-wrapper ends -->
+	</div>
+	<!-- container-scroller -->
+	<!-- plugins:js -->
+	<%- include ("../partials/_plugins_js.ejs") %>
+		<!-- endinject -->
+		<!-- Plugin js for this page-->
+		<!-- End plugin js for this page-->
+		<!-- inject:js -->
+		<script src="/assets/js/shared/off-canvas.js"></script>
+		<script src="/assets/js/shared/misc.js"></script>
+		<!-- endinject -->
+		<!-- Custom js for this page-->
+		<script src="/assets/js/shared/dashboard.js"></script>
+		<!-- End custom js for this page-->
+
+
+
+
+		<script>
+			function check_name(input_value) {
+				var val = document.getElementById(input_value).value;
+				if (val.length > 20) {
+					alert('Please enter a username less than 20 characters');
+					var temp = document.getElementById(input_value);
+					temp.value = '';
+				}
+				if (val == '') {
+					alert('Please enter a username');
+					var temp = document.getElementById(input_value);
+					temp.value = '';
+				}
+			}
+
+			function check_password(input_value) {
+				var val = document.getElementById(input_value).value;
+				console.log(val.length);
+				if (val.length > 20) {
+					alert('Please enter password less than 20 characters');
+					var temp = document.getElementById(input_value);
+					temp.value = '';
+				}
+				if (val.length < 8) {
+					alert('Please enter password greater than 8 characters');
+					var temp = document.getElementById(input_value);
+					temp.value = '';
+				}
+			}
+
+			function check_cpassword(input_value, input_value2) {
+				check = false;
+				var val = document.getElementById(input_value).value;
+				var val2 = document.getElementById(input_value2).value;
+				for (let i = 0; i < val.length; i++) {
+					if (val[i] != val2[i]) {
+						check = true;
+					}
+				}
+				if (check == true) {
+					alert('Confirme your Password again, Passwords do not match.');
+					var temp = document.getElementById(input_value2);
+					temp.value = '';
+				}
+			}
+		</script>
+</body>
+
+</html>
