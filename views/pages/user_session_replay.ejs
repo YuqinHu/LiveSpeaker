@@ -1,102 +1,332 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
+  <!-- Required meta tags -->
   <meta charset="utf-8">
-  <title>Video Page</title>
-  <link href="../stylesheets/video.css" rel="stylesheet" type="text/css">
-  <link href="../stylesheets/button.css" rel="stylesheet" type="text/css">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Notes</title>
+  <!-- plugins:css -->
+  <%- include ("../partials/_plugins_css.ejs") %>
+    <!-- endinject -->
+    <!-- plugin css for this page -->
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="/assets/css/shared/style.css">
+    <!-- endinject -->
+    <!-- Layout styles -->
+    <link rel="stylesheet" href="/assets/css/shared/dashboard-style.css">
+    <!-- End Layout styles -->
+    <!-- plugins:headjs -->
+    <%- include ("../partials/_plugins_head_js.ejs") %>
+      <!-- endinject -->
+
+      <meta http-equiv="refresh">
+
 </head>
 
 <body>
-  <header>
-    <form action="/logout" method="get">
-      <input type="submit" value="Logout" id="logout_button">
-    </form>
-    <form action="/Home" method="get">
-      <input type="submit" value="Home" id="logout_button">
-    </form>
-  </header>
-  <main>
+  <div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+    <%- include ("../partials/_navbar.ejs") %>
+      <!-- partial -->
+      <div class="container-fluid page-body-wrapper">
+        <!-- partial:partials/_sidebar.html -->
+        <%- include ("../partials/_sidebar.ejs") %>
+          <!-- partial -->
+          <div class="main-panel">
+            <div class="content-wrapper">
+              <!-- Page Title Header Starts-->
+              <div class="row page-title-header">
+                <div class="col-12">
+                  <div class="page-header">
+                    <h4 class="page-title">Notes</h4>
 
-    <div id="video_box" name="video_box" class="video_box">
-      <video controls>
-        <source src="<%= session_video_url%>" type="video/mp4">
-      </video>
-    </div>
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="page-header-toolbar">
+                    <div class="sort-wrapper" style="float:left">
+                      <!--									<form action="/table" method="get">-->
+                      <button type="submit" class="btn btn-secondary toolbar-item"
+                        onclick="javascript:window.location.href='/home'">Back
+                      </button>
+                      <!--									</form>-->
 
-    <!-- <div id="input_area">
 
-      <form action="/addReviewComment" method="post">
+                      <div class="dropdown ml-3 toolbar-item">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownexport"
+                          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Tools</button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownexport">
+                          <a class="dropdown-item" href="/web_tools/calculator.html" target="_blank">Graphing
+                            Calculator</a>
+                          <!-- <a class="dropdown-item" href="#">Export as DOCX</a>
+                    <a class="dropdown-item" href="#">Export as CDR</a> -->
+                        </div>
+                      </div>
+                    </div>
 
-        
-          <tbody>
-            <tr>
-              <h3>New Note</h3>
-            </tr>
-            <tr>
-              <td> -->
-                <!--
-        	<input name = "new_comment_user_name" type="text">
-    		<input name = "new_comment_uid" type="number">
--->
-              <!-- </td>
-            </tr>
-            <tr>
-              <td>
-                <table border="0" class="big_table">
-                  <tbody>
-                    <tr>
-                      <td><textarea name="new_comment_comment"></textarea></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <button name="submit_new_comment" type="submit" class="button" class="noselect"><span>submit
-                          </span></button>
+                  </div>
+                </div>
+              </div>
+              <!-- Page Title Header Ends-->
 
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </form>
-    </div>
 
-    <div class="all_comment_area"> -->
-      <!--show comment-->
-
-      <h3>All Notes</h3> 
-      <table border="0" id="new_comment_table">
-        <tbody>
-
-          <% session_notes.rows.forEach(function(r) { %>
-            <tr>
-              <td>
-                <div id="single_comment">
-                  <table border="0">
-                    <tbody>
-                      <tr>
-                        <td><b><%= r.c_name %> &nbsp; <%= r.diff_string %> </b> </td>
-                      </tr>
-                      <tr>
-                        <td><br><%= r.c_comment %><br><br></td>
-                      </tr>
-                    </tbody>
-                  </table>
-
+              <div class="row">
+                <div class="col-12 grid-margin stretch-card">
+                  <div class="card">
+                    <div class="card-body">
+                      <h4 class="card-title">Session Recording</h4>
+                      <div id="video_box" name="video_box" class="video_box">
+                        <video controls width="100%">
+                          <source src="<%= session_video_url%>" type="video/mp4">
+                        </video>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-              </td>
-            </tr>
-        </tbody>
-        <% }); %>
-      </table>
-      <br><br>
+                <div class="col-12 grid-margin stretch-card" id="attachment_box" style="display: none;">
+                  <div class="card">
+                    <div class="card-body">
+                      <h4 class="card-title">Attachment File</h4>
 
-  </main>
+                      <div>
+                        <a href="/error/cannot_get_attachment.html" id="download_attachment" target="_blank">
+                          <button type="button" class="btn btn-dark btn-fw">
+                            <i class="mdi mdi-cloud-download"></i>Download
+                          </button>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-12 grid-margin stretch-card">
+
+                  <div class="card">
+                    <div class="card-body">
+                      <h4 class="card-title">Notes</h4>
+                      <div>
+                        <% session_notes.rows.forEach(function(r) { %>
+                          <div style="width: 100%; border-radius:0.2rem;" class="div-hover"
+                            onMouseOver="javascript:diaplay_button_box('<%= r.c_comment_id %>')"
+                            onMouseOut="javascript:hide_button_box('<%= r.c_comment_id %>')">
+                            <table width="100%" class="table table-borderless">
+                              <tbody>
+                                <tr>
+                                  <td>
+                                    <div style="width: 100%; text-align: left">
+                                      <%= r.c_name %> &nbsp; <%= r.diff_string %>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div style="width: 100%; text-align: right; visibility: hidden;"
+                                      id="button_box_<%= r.c_comment_id %>">
+                                      <div>
+                                        <form action="/delete_comment_remote/<%= r.c_comment_id %>" method="post">
+                                          <button id="share_button_<%= r.c_comment_id %>" type="button"
+                                            onclick="handleShowModel('<%= r.c_comment %>', '<%= r.diff_string %>' ,'<%= r.c_comment_id %>','<%= r.c_uid %>')"
+                                            class="btn btn-icons btn-inverse-secondary">
+                                            <i class="fa fa-share-alt"></i>
+                                          </button>
+                                          <!-- //这个按钮在form里是因为在外面就变成竖排了, 之后可能会改。 -->
+                                          <button id="delete_button_<%= r.c_comment_id %>" type="submit"
+                                            class="btn btn-icons btn-inverse-secondary">
+                                            <i class="fa fa-trash-o"></i>
+                                          </button>
+                                        </form>
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td colspan="2">
+                                    <%= r.c_comment %><br><br><br>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                          <% }); %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12 grid-margin stretch-card">
+                  <div class="card">
+                    <div class="card-body">
+                      <h4 class="card-title">Received Notes</h4>
+                      <div>
+                        <% session_notes.share_rows.forEach(function(r) { %>
+                          <div style="width: 100%; border-radius:0.2rem;" class="div-hover">
+                            <table width="100%" class="table table-borderless">
+                              <tbody>
+                                <tr>
+                                  <td>
+                                    <div style="width: 100%; text-align: top-left">
+                                      From: <%= r.from_email %> &nbsp; <%= r.comment_time %>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div style="width: 100%; text-align: right; visibility: visible"
+                                      id="button_receive_box_<%= r.comment_id %>">
+
+                                      <form action="/delete_share_note/<%= r.comment_id %>" method="post">
+                                        <button id="delete_button_<%= r.comment_id %>" type="submit"
+                                          class="btn btn-icons btn-inverse-secondary">
+                                          <i class="fa fa-trash-o"></i>
+                                        </button>
+                                      </form>
+                                    </div>
+
+
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td colspan="2">
+                                    <%= r.comment %><br><br><br>
+                                  </td>
+
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                          <% }); %>
+
+
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+
+
+              </div>
+
+
+              <div class="row" style="
+                margin-left:auto;margin-right:auto;
+                position: fixed;
+                width:80%;
+              top: 30%;">
+                <div class="col-lg-12 grid-margin stretch-card" id="modal" style="display: none;">
+
+                  <div class="card" style="box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.13);">
+                    <div class="card-body">
+                      <h4 class="card-title">Send Notes</h4>
+                      <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" class="form-control" placeholder="Email" id="modalEmail" name="to_email"
+                          required>
+                      </div>
+                      <button  onClick="window.location.reload();" type = "submit" style="margin-top: 5px; margin-bottom: 5px;" id="sendBtn"
+                        class="btn btn-success col-sm-12"><i class="fa fa-paper-plane"></i>Add</button><br><button
+                        style="margin-top: 5px; margin-bottom: 5px;" id="sendBtn" type="button"
+                        class="btn btn-secondary col-sm-12"
+                        onclick="javascript:document.getElementById('modal').style.display='none'">Cancel</button>
+                      </form>
+                      </div>
+
+                    </div>
+                </div>
+                <!--  -->
+
+              </div>
+            </div>
+          </div>
+
+      </div>
+      <!-- content-wrapper ends -->
+      <!-- partial:partials/_footer.html -->
+      <%- include ("../partials/_footer.ejs") %>
+        <!-- partial -->
+  </div>
+  <!-- main-panel ends -->
+  </div>
+  <!-- page-body-wrapper ends -->
+  </div>
+  <!-- container-scroller -->
+  <!-- plugins:js -->
+  <%- include ("../partials/_plugins_js.ejs") %>
+    <!-- endinject -->
+    <!-- Plugin js for this page-->
+    <!-- End plugin js for this page-->
+    <!-- inject:js -->
+    <script src="/assets/js/shared/off-canvas.js"></script>
+    <script src="/assets/js/shared/misc.js"></script>
+    <!-- endinject -->
+    <!-- Custom js for this page-->
+    <script src="/assets/js/shared/dashboard.js"></script>
+    <!-- End custom js for this page-->
+    <script>
+      function diaplay_button_box(id) {
+        let element_id = `button_box_${id}`
+        document.getElementById(element_id).style.visibility = "visible";
+      }
+    
+      function hide_button_box(id) {
+        let element_id = `button_box_${id}`
+        document.getElementById(element_id).style.visibility = "hidden";
+      }
+    
+    
+    </script>
+        <script>
+          function diaplay_receive_notes_button_box(id) {
+            let element_id = `button_receive_box_${id}`
+            document.getElementById(element_id).style.visibility = "visible";
+          }
+        
+          function hide_receuve_notes_button_box(id) {
+            let element_id = `button_receive_box_${id}`
+            document.getElementById(element_id).style.visibility = "hidden";
+          }
+        
+        
+        </script>
+    
+    <script>
+      function hide() {
+        document.querySelector('#modal').setAttribute('style', 'display: none')
+      }
+    
+      function handleShowModel(content, comment_time, comment_id, from_uid) {
+        document.querySelector('#modal').setAttribute('style', 'display: block')
+        // document.querySelector('#modal_table').setAttribute('style', 'display: block')
+        document.querySelector('#sendBtn').addEventListener('click', () => {
+          const email = document.querySelector('#modalEmail').value;
+          if (!email || email === '') {
+            alert('Please Input Email')
+            return
+          }
+          fetch('/sendemail', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              to_email: email,
+              comment: content,
+              comment_time: comment_time,
+              comment_id: comment_id,
+              from_uid: from_uid
+            })
+          })
+          // .then(res => res.json())
+            .then(res => res.json())
+            // .then(data => res.json())
+            .then(
+              alert('Email Send')
+            ).finally(() => {
+              document.querySelector('#modal').setAttribute('style', 'display: none')
+            })
+        })
+      }
+    </script>
+    
+
+  
+<script src="/script/display_attachment.js"></script>
 </body>
-
 </html>
